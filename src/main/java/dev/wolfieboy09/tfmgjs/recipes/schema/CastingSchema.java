@@ -11,19 +11,24 @@ import dev.latvian.mods.kubejs.recipe.schema.RecipeConstructor;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 
 public interface CastingSchema {
-    RecipeKey<InputFluid> INGREDIENTS = FluidComponents.INPUT.key("ingredients");
+    RecipeKey<InputFluid[]> INGREDIENTS = FluidComponents.INPUT.asArray().key("ingredients");
     RecipeKey<OutputItem[]> RESULTS = ItemComponents.OUTPUT.asArray().key("results");
     RecipeKey<Long> TIME = TimeComponent.TICKS.key("processingTime").alt("time");
 
     RecipeConstructor.Factory FACTORY = (recipe, schemaType, keys, from) -> {
         recipe.setValue(RESULTS, from.getValue(recipe, RESULTS));
-        recipe.setValue(INGREDIENTS, from.getValue(recipe, INGREDIENTS));
+        InputFluid[] ingredients = from.getValue(recipe, INGREDIENTS);
+        if (ingredients.length != 1) {
+            throw new RecipeExceptionJS("Casting recipe must have exactly one input fluid");
+        }
+
+        recipe.setValue(INGREDIENTS, ingredients);
         recipe.setValue(TIME, from.getValue(recipe, TIME));
 
         OutputItem[] outputItems = recipe.getValue(RESULTS);
         switch (outputItems.length) {
             case 1, 2, 3 -> recipe.setValue(RESULTS, from.getValue(recipe, RESULTS));
-            default -> throw new RecipeExceptionJS("Casting recipe cannot have more then 3 item outputs");
+            default -> throw new RecipeExceptionJS("Casting recipe cannot have more than 3 item outputs");
         }
     };
 
