@@ -9,7 +9,6 @@ import dev.latvian.mods.kubejs.recipe.component.ItemComponents;
 import dev.latvian.mods.kubejs.recipe.component.TimeComponent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeConstructor;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
-import dev.wolfieboy09.tfmgjs.recipes.CastingJS;
 
 public interface CastingSchema {
     RecipeKey<InputFluid> INGREDIENTS = FluidComponents.INPUT.key("ingredients");
@@ -18,14 +17,16 @@ public interface CastingSchema {
 
     RecipeConstructor.Factory FACTORY = (recipe, schemaType, keys, from) -> {
         recipe.setValue(RESULTS, from.getValue(recipe, RESULTS));
+        recipe.setValue(INGREDIENTS, from.getValue(recipe, INGREDIENTS));
+        recipe.setValue(TIME, from.getValue(recipe, TIME));
 
         OutputItem[] outputItems = recipe.getValue(RESULTS);
         switch (outputItems.length) {
-            case 1, 2, 3 -> recipe.setValue(INGREDIENTS, from.getValue(recipe, INGREDIENTS));
+            case 1, 2, 3 -> recipe.setValue(RESULTS, from.getValue(recipe, RESULTS));
             default -> throw new RecipeExceptionJS("Casting recipe cannot have more then 3 item outputs");
         }
     };
 
-    RecipeSchema SCHEMA = new RecipeSchema(CastingJS.class, CastingJS::new, INGREDIENTS, RESULTS, TIME)
+    RecipeSchema SCHEMA = new RecipeSchema(INGREDIENTS, RESULTS, TIME)
             .constructor(FACTORY, INGREDIENTS, RESULTS, TIME);
 }
