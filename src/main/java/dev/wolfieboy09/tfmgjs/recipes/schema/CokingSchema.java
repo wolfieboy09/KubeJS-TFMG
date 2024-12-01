@@ -13,7 +13,7 @@ import dev.latvian.mods.kubejs.recipe.schema.RecipeConstructor;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 
 public interface CokingSchema {
-    RecipeKey<InputItem[]> INGREDIENT = ItemComponents.INPUT.asArray().key("ingredients");
+    RecipeKey<InputItem[]> INGREDIENT = ItemComponents.INPUT_ARRAY.key("ingredients");
     RecipeKey<Either<OutputFluid, OutputItem>[]> RESULTS = FluidComponents.OUTPUT_OR_ITEM_ARRAY.key("results");
     RecipeKey<Long> TIME = TimeComponent.TICKS.key("processingTime");
 

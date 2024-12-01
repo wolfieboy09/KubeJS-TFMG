@@ -11,8 +11,8 @@ import dev.latvian.mods.kubejs.recipe.schema.RecipeConstructor;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 
 public interface CastingSchema {
-    RecipeKey<InputFluid[]> INGREDIENTS = FluidComponents.INPUT.asArray().key("ingredients");
-    RecipeKey<OutputItem[]> RESULTS = ItemComponents.OUTPUT.asArray().key("results");
+    RecipeKey<InputFluid[]> INGREDIENTS = FluidComponents.INPUT_ARRAY.key("ingredients");
+    RecipeKey<OutputItem[]> RESULTS = ItemComponents.OUTPUT_ARRAY.key("results");
     RecipeKey<Long> TIME = TimeComponent.TICKS.key("processingTime").alt("time");
 
     RecipeConstructor.Factory FACTORY = (recipe, schemaType, keys, from) -> {
