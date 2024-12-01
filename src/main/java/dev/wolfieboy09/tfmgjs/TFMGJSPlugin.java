@@ -12,7 +12,7 @@ public class TFMGJSPlugin extends KubeJSPlugin {
                 .register("casting", CastingSchema.SCHEMA)
                 .register("coking", CokingSchema.SCHEMA)
                 .register("distillation", DistillationSchema.SCHEMA)
-                // .register("gas_blasting", GasBlastingSchema.SCHEMA) //TODO FIX BUG
+                .register("gas_blasting", GasBlastingSchema.SCHEMA) //TODO FIX BUG
                 .register("industrial_blasting", IndustrialBlastingSchema.SCHEMA)
                 .register("polarizing", PolarizingSchema.SCHEMA);
     }
