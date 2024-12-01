@@ -20,7 +20,7 @@ public interface CokingSchema {
     RecipeConstructor.Factory FACTORY = (recipe, schemaType, keys, from) -> {
         recipe.setValue(TIME, from.getValue(recipe, TIME));
         if (from.getValue(recipe, INGREDIENT).length > 1) {
-            throw new RecipeExceptionJS("Coking recipe must have exactly one item input");
+            throw new RecipeExceptionJS("Recipe can only a max of 1 ingredients");
         }
 
         recipe.setValue(INGREDIENT, from.getValue(recipe, INGREDIENT));

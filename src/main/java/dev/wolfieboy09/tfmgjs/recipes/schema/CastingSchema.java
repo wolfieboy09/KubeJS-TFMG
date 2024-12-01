@@ -19,7 +19,7 @@ public interface CastingSchema {
         recipe.setValue(RESULTS, from.getValue(recipe, RESULTS));
         InputFluid[] ingredients = from.getValue(recipe, INGREDIENTS);
         if (ingredients.length != 1) {
-            throw new RecipeExceptionJS("Casting recipe must have exactly one input fluid");
+            throw new RecipeExceptionJS("Recipe can only a max of 1 ingredients");
         }
 
         recipe.setValue(INGREDIENTS, ingredients);

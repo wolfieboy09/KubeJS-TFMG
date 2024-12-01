@@ -14,7 +14,7 @@ public interface DistillationSchema {
 
     RecipeConstructor.Factory FACTORY = (recipe, schemaType, keys, from) -> {
         if (from.getValue(recipe, INGREDIENT).length != 1) {
-            throw new RecipeExceptionJS("Recipe must have exactly one fluid input");
+            throw new RecipeExceptionJS("Recipe can only a max of 1 ingredients");
         }
         recipe.setValue(INGREDIENT, from.getValue(recipe, INGREDIENT));
 
