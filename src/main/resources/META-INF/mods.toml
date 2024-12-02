@@ -31,18 +31,18 @@ description='''${mod_description}'''
 [[dependencies.tfmgjs]]
     modId="create"
     mandatory=true
-    versionRange="[0.5.1.i,)"
+    versionRange="[0.5.1.i-59,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.tfmgjs]]
     modId="kubejs"
     mandatory=true
-    versionRange="[2001.6.5-build.16,)"
+    versionRange="[1902.6.2-build.74,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.tfmgjs]]
     modId="tfmg"
     mandatory=true
-    versionRange="[0.9.3-1.20.1,)"
+    versionRange="[0.9.3-1.19.2,)"
