@@ -1,6 +1,6 @@
 package dev.wolfieboy09.tfmgjs;
 
-import com.drmangotea.tfmg.CreateTFMG;
+import com.drmangotea.createindustry.CreateTFMG;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
 import dev.wolfieboy09.tfmgjs.recipes.schema.*;
