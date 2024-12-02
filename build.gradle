@@ -102,7 +102,7 @@ dependencies {
 
     implementation fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
     implementation fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
-    runtimeOnly fg.deobf("curse.maven:jei-238222:5846810")
+    runtimeOnly fg.deobf("curse.maven:jei-238222:3922508")
 }
 
 
