@@ -1,4 +1,4 @@
-package dev.wolfieboy09.tfmgjs.recipes.schema;
+package dev.wolfieboy09.tfmgjs.recipes;
 
 import dev.latvian.mods.kubejs.fluid.InputFluid;
 import dev.latvian.mods.kubejs.fluid.OutputFluid;

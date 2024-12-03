@@ -1,8 +1,9 @@
-package dev.wolfieboy09.tfmgjs.recipes.schema;
+package dev.wolfieboy09.tfmgjs.recipes;
 
 import dev.latvian.mods.kubejs.fluid.OutputFluid;
 import dev.latvian.mods.kubejs.item.InputItem;
 import dev.latvian.mods.kubejs.recipe.RecipeExceptionJS;
+import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.FluidComponents;
 import dev.latvian.mods.kubejs.recipe.component.ItemComponents;
@@ -14,6 +15,10 @@ public interface IndustrialBlastingSchema {
     RecipeKey<InputItem[]> INGREDIENT = ItemComponents.INPUT_ARRAY.key("ingredients");
     RecipeKey<OutputFluid[]> RESULTS = FluidComponents.OUTPUT_ARRAY.key("results");
     RecipeKey<Long> TIME = TimeComponent.TICKS.key("processingTime");
+
+    class IndustrialBlastingJS extends RecipeJS {
+
+    }
 
     RecipeConstructor.Factory FACTORY = (recipe, schemaType, keys, from) -> {
         InputItem[] ingredients = from.getValue(recipe, INGREDIENT);

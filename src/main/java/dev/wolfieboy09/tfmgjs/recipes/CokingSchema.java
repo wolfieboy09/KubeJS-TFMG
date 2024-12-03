@@ -1,4 +1,4 @@
-package dev.wolfieboy09.tfmgjs.recipes.schema;
+package dev.wolfieboy09.tfmgjs.recipes;
 
 import com.mojang.datafixers.util.Either;
 import dev.latvian.mods.kubejs.fluid.OutputFluid;
