@@ -3,6 +3,7 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.spongepowered.mixin' version '0.7.+'
 }
 
 version = mod_version
@@ -103,6 +104,7 @@ dependencies {
     implementation fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
     implementation fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
     runtimeOnly fg.deobf("curse.maven:jei-238222:5846810")
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 
@@ -152,4 +154,9 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+}
+
+mixin {
+    config "tfmgjs.mixins.json"
+    add sourceSets.main, "tfmgjs.refmap.json"
 }

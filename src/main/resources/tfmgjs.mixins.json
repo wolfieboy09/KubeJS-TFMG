@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "priority": 10000,
+  "package": "dev.wolfieboy09.tfmgjs.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "tfmgjs.refmap.json",
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
