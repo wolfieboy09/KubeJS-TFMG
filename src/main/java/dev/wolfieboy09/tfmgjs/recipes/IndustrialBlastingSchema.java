@@ -16,10 +16,6 @@ public interface IndustrialBlastingSchema {
     RecipeKey<OutputFluid[]> RESULTS = FluidComponents.OUTPUT_ARRAY.key("results");
     RecipeKey<Long> TIME = TimeComponent.TICKS.key("processingTime");
 
-    class IndustrialBlastingJS extends RecipeJS {
-
-    }
-
     RecipeConstructor.Factory FACTORY = (recipe, schemaType, keys, from) -> {
         InputItem[] ingredients = from.getValue(recipe, INGREDIENT);
         if (ingredients.length > 1) {
