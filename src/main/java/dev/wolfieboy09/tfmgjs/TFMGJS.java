@@ -1,7 +1,6 @@
 package dev.wolfieboy09.tfmgjs;
 
 import com.mojang.logging.LogUtils;
-import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 
@@ -9,7 +8,4 @@ import org.slf4j.Logger;
 public class TFMGJS {
     public static final String MODID = "tfmgjs";
     private static final Logger LOGGER = LogUtils.getLogger();
-
-    public TFMGJS(ModContainer context) {}
-
 }
