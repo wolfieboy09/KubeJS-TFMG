@@ -97,7 +97,7 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    implementation fg.deobf("curse.maven:create-industry-693815:6684635")
+    implementation fg.deobf("curse.maven:create-industry-693815:6729106")
 
     // Why does create need so many :sob:
     implementation fg.deobf("com.simibubi.create:create-${create_minecraft_version}:${create_version}:slim") { transitive = false }
