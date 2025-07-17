@@ -9,8 +9,6 @@ import dev.latvian.mods.kubejs.recipe.RecipeExceptionJS;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.ComponentValueMap;
-import dev.latvian.mods.kubejs.recipe.component.NumberComponent;
-import dev.latvian.mods.kubejs.recipe.component.TimeComponent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeConstructor;
 import org.jetbrains.annotations.Nullable;
 
