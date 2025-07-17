@@ -10,15 +10,14 @@ import dev.latvian.mods.kubejs.recipe.RecipeExceptionJS;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.component.ComponentValueMap;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class VatRecipeFactory {
 
-    public VatRecipeFactory() {
-
-    }
+    public VatRecipeFactory() {}
 
     RecipeConstructor.Factory factory = (recipe, schemaType, keys, from) -> {
         Either<InputFluid, InputItem>[] ingredients = from.getValue(recipe, VatRecipeSchema.INGREDIENTS);
@@ -41,7 +40,7 @@ public class VatRecipeFactory {
         recipe.setValue(VatRecipeSchema.PROCESSING_TIME_REQUIRED, processingTime);
     };
 
-    private void handleIngredients(RecipeJS recipe, ComponentValueMap from) {
+    private void handleIngredients(RecipeJS recipe, @NotNull ComponentValueMap from) {
         Either<InputFluid, InputItem>[] ingredients = from.getValue(recipe, VatRecipeSchema.INGREDIENTS);
 
         List<InputFluid> fluidIngredients = new ArrayList<>();
@@ -64,7 +63,7 @@ public class VatRecipeFactory {
         recipe.setValue(VatRecipeSchema.INGREDIENTS, ingredients);
     }
 
-    private void handleResults(RecipeJS recipe, ComponentValueMap from) {
+    private void handleResults(RecipeJS recipe, @NotNull ComponentValueMap from) {
         Either<OutputFluid, OutputItem>[] results = from.getValue(recipe, VatRecipeSchema.RESULTS);
 
         List<OutputFluid> fluidResults = new ArrayList<>();

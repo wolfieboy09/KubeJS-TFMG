@@ -40,9 +40,7 @@ public class TFMGRecipeFactory {
     private int maxItemInputs = 1;
     private int maxFluidInputs = 1;
 
-    TFMGRecipeFactory() {
-
-    }
+    TFMGRecipeFactory() {}
 
     public TFMGRecipeFactory create(RecipeKey<InputFluid[]> fluidIngredients, RecipeKey<OutputFluid[]> fluidResults, RecipeKey<InputItem[]> itemIngredients, RecipeKey<OutputItem[]> itemResults) {
         this.FLUID_INGREDIENTS = fluidIngredients;
