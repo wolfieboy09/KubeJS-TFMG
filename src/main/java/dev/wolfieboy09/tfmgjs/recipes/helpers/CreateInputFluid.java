@@ -12,20 +12,20 @@ public record CreateInputFluid(FluidIngredient ingredient) implements InputFluid
 
     @Override
     public boolean kjs$isEmpty() {
-        return ingredient.equals(FluidIngredient.EMPTY) || ingredient.getMatchingFluidStacks().isEmpty();
+        return this.ingredient.equals(FluidIngredient.EMPTY) || this.ingredient.getMatchingFluidStacks().isEmpty();
     }
 
     @Override
     public long kjs$getAmount() {
-        return ingredient.getRequiredAmount();
+        return this.ingredient.getRequiredAmount();
     }
 
     @Override
     public FluidLike kjs$copy(long amount) {
-        if (ingredient instanceof FluidIngredient.FluidStackIngredient in) {
+        if (this.ingredient instanceof FluidIngredient.FluidStackIngredient in) {
             var fs = in.getMatchingFluidStacks().get(0);
             return FluidStackJS.of(fs.getFluid(), amount, fs.getTag() == null ? null : fs.getTag().copy());
-        } else if (ingredient instanceof FluidIngredient.FluidTagIngredient in && in.getRequiredAmount() != amount) {
+        } else if (this.ingredient instanceof FluidIngredient.FluidTagIngredient in && in.getRequiredAmount() != amount) {
             var tag = Tags.fluid(ResourceLocation.parse(in.serialize().get("fluidTag").getAsString()));
             return new CreateInputFluid(FluidIngredient.fromTag(tag, (int) amount));
         }

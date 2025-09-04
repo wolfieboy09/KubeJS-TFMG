@@ -43,11 +43,11 @@ public interface TFMGRecipeSchema {
         @Override
         public JsonElement write(RecipeJS recipe, Either<InputFluid, InputItem>[] value) {
             // during writing, unwrap all stacked input items
-            var json = new JsonArray();
+            JsonArray json = new JsonArray();
             for (var either : value) {
                 either.ifLeft(fluid -> json.add(FluidComponents.INPUT.write(recipe, fluid)))
                         .ifRight(item -> {
-                            for (var unwrapped : item.unwrap()) {
+                            for (InputItem unwrapped : item.unwrap()) {
                                 json.add(ItemComponents.INPUT.write(recipe, unwrapped));
                             }
                         });
@@ -64,8 +64,8 @@ public interface TFMGRecipeSchema {
 
         @Override
         public JsonElement write(RecipeJS recipe, InputFluid[] values) {
-            var json = new JsonArray();
-            for (var unwrapped : values) {
+            JsonArray json = new JsonArray();
+            for (InputFluid unwrapped : values) {
                 json.add(FluidComponents.INPUT.write(recipe, unwrapped));
             }
             return json;
@@ -80,9 +80,9 @@ public interface TFMGRecipeSchema {
 
         @Override
         public JsonElement write(RecipeJS recipe, InputItem[] value) {
-            var json = new JsonArray();
-            for (var item : value) {
-                for (var unwrapped : item.unwrap()) {
+            JsonArray json = new JsonArray();
+            for (InputItem item : value) {
+                for (InputItem unwrapped : item.unwrap()) {
                     json.add(ItemComponents.INPUT.write(recipe, unwrapped));
                 }
             }

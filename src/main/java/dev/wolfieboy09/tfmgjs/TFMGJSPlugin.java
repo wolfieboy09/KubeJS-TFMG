@@ -30,9 +30,9 @@ public class TFMGJSPlugin extends KubeJSPlugin {
 
     @Override
     public void registerRecipeSchemas(RegisterRecipeSchemasEvent event) {
-        for (var entry : TFMGRecipeTypes.values()) {
+        for (TFMGRecipeTypes entry : TFMGRecipeTypes.values()) {
             if (entry.getSerializer() instanceof ProcessingRecipeSerializer<?>) {
-                var schema = recipeSchemas.getOrDefault(entry, TFMGRecipeSchema.PROCESSING_DEFAULT);
+                RecipeSchema schema = recipeSchemas.getOrDefault(entry, TFMGRecipeSchema.PROCESSING_DEFAULT);
                 event.register(entry.getId(), schema);
             }
         }
