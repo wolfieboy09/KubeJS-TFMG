@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TFMGRecipeFactory {
-
     @Nullable
     RecipeKey<InputFluid[]> FLUID_INGREDIENTS = null;
     @Nullable

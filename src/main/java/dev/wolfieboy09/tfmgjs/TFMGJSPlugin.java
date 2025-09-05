@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TFMGJSPlugin extends KubeJSPlugin {
-
     private static final Map<TFMGRecipeTypes, RecipeSchema> recipeSchemas = new HashMap<>();
 
     static {

@@ -6,7 +6,6 @@ import com.drmangotea.tfmg.content.machinery.vat.electrode_holder.electrode.Elec
 import dev.latvian.mods.kubejs.registry.RegistryInfo;
 
 public class TFMGJSRegistryInfo {
-
     public static final RegistryInfo<CableType> CABLE_TYPE = RegistryInfo.of(TFMGRegistries.CABLE_TYPE, CableType.class);
 
     public static final RegistryInfo<Electrode> ELECTRODE = RegistryInfo.of(TFMGRegistries.ELECTRODE, Electrode.class);

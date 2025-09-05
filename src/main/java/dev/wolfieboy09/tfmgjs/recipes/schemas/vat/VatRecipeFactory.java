@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VatRecipeFactory {
-
     public VatRecipeFactory() {}
 
     RecipeConstructor.Factory factory = (recipe, schemaType, keys, from) -> {
