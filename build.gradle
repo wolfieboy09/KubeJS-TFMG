@@ -15,11 +15,11 @@ base {
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-def refmap
-mixin {
-    refmap = add sourceSets.main, 'tfmgjs.refmap.json'
-    config 'tfmgjs.mixins.json'
-}
+//def refmap
+//mixin {
+//    refmap = add sourceSets.main, 'tfmgjs.refmap.json'
+//    config 'tfmgjs.mixins.json'
+//}
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
@@ -166,7 +166,7 @@ dependencies {
 
     modRuntimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}") { transitive = false }
 
-    annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
+    //annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
 }
 
 compileJava.options.encoding = 'UTF-8'
@@ -192,9 +192,7 @@ jar {
     //    rename { "${it}_${archivesBaseName}" }
     //}
 
-    manifest.attributes([
-            "MixinConfigs": "tfmgjs.mixins.json"
-    ])
+    //manifest.attributes(["MixinConfigs": "tfmgjs.mixins.json"])
 }
 
 tasks.named("sourcesJar") {
@@ -204,10 +202,8 @@ tasks.named("sourcesJar") {
 final slimJar = tasks.register("slimJar", Jar) {
     archiveClassifier = "slim"
     from(sourceSets.main.output)
-    from(refmap)
-    manifest.attributes([
-            "MixinConfigs": "tfmgjs.mixins.json"
-    ])
+    //from(refmap)
+    //manifest.attributes(["MixinConfigs": "tfmgjs.mixins.json"])
 }
 obfuscation.reobfuscate(slimJar, sourceSets.main)
 
