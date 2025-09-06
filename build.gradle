@@ -198,8 +198,7 @@ jar {
 }
 
 tasks.named("sourcesJar") {
-    manifest.attributes([
-    ])
+    manifest.attributes([:]) // It works, I don't know why
 }
 
 final slimJar = tasks.register("slimJar", Jar) {
