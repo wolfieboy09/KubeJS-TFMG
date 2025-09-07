@@ -27,6 +27,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.List;
+
 public interface VatRecipeSchema {
     RecipeKey<Either<OutputFluid, OutputItem>[]> RESULTS = FluidComponents.OUTPUT_OR_ITEM_ARRAY.key("results");
     RecipeKey<Either<InputFluid, InputItem>[]> INGREDIENTS = FluidComponents.INPUT_OR_ITEM_ARRAY.key("ingredients");
@@ -126,6 +128,10 @@ public interface VatRecipeSchema {
             return setValue(VAT_TYPES, types);
         }
 
+        public RecipeJS allowAllVatTypes() {
+            return setValue(VAT_TYPES, new String[]{"tfmg:steel_vat", "tfmg:cast_iron_vat", "tfmg", "firebrick_lined_vat"});
+        }
+
         public RecipeJS minSize(int size) {
             return setValue(MIN_SIZE, size);
         }
@@ -135,6 +141,6 @@ public interface VatRecipeSchema {
         }
     }
 
-    RecipeSchema VAT = new RecipeSchema(VatRecipeJS.class, VatRecipeJS::new, INGREDIENTS, RESULTS, MACHINES, VAT_TYPES, MIN_SIZE, PROCESSING_TIME_REQUIRED, HEAT_REQUIREMENT);
-            //.constructor(new VatRecipeFactory().factory, INGREDIENTS, RESULTS, MACHINES, VAT_TYPES, MIN_SIZE, PROCESSING_TIME_REQUIRED, HEAT_REQUIREMENT);
+    RecipeSchema VAT = new RecipeSchema(VatRecipeJS.class, VatRecipeJS::new, INGREDIENTS, RESULTS, MACHINES, VAT_TYPES, MIN_SIZE, PROCESSING_TIME_REQUIRED, HEAT_REQUIREMENT)
+            .constructor(new VatRecipeFactory().factory, INGREDIENTS, RESULTS, MACHINES, VAT_TYPES, MIN_SIZE, PROCESSING_TIME_REQUIRED, HEAT_REQUIREMENT);
 }
