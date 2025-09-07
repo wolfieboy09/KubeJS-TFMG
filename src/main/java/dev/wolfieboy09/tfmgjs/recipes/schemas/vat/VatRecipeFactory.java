@@ -19,8 +19,8 @@ public class VatRecipeFactory {
     public VatRecipeFactory() {}
 
     RecipeConstructor.Factory factory = (recipe, schemaType, keys, from) -> {
-        Either<InputFluid, InputItem>[] ingredients = from.getValue(recipe, VatRecipeSchema.INGREDIENTS);
-        Either<OutputFluid, OutputItem>[] results = from.getValue(recipe, VatRecipeSchema.RESULTS);
+        //Either<InputFluid, InputItem>[] ingredients = from.getValue(recipe, VatRecipeSchema.INGREDIENTS);
+        //Either<OutputFluid, OutputItem>[] results = from.getValue(recipe, VatRecipeSchema.RESULTS);
         String[] machines = from.getValue(recipe, VatRecipeSchema.MACHINES);
         String[] vatTypes = from.getValue(recipe, VatRecipeSchema.VAT_TYPES);
         int minSize = from.getValue(recipe, VatRecipeSchema.MIN_SIZE);

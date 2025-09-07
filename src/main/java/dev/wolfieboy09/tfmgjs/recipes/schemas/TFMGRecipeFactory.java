@@ -10,6 +10,7 @@ import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.ComponentValueMap;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -126,7 +127,7 @@ public class TFMGRecipeFactory {
         }
     }
 
-    private void handleFluidIngredients(RecipeJS recipe, ComponentValueMap from) {
+    private void handleFluidIngredients(RecipeJS recipe, @NotNull ComponentValueMap from) {
         InputFluid[] ingredients = from.getValue(recipe, FLUID_INGREDIENTS);
 
         if (ingredients.length > maxFluidInputs) {
@@ -136,7 +137,7 @@ public class TFMGRecipeFactory {
         recipe.setValue(FLUID_INGREDIENTS, ingredients);
     }
 
-    private void handleItemIngredients(RecipeJS recipe, ComponentValueMap from) {
+    private void handleItemIngredients(RecipeJS recipe, @NotNull ComponentValueMap from) {
         InputItem[] ingredients = from.getValue(recipe, ITEM_INGREDIENTS);
 
         if (ingredients.length > maxItemInputs) {
@@ -146,7 +147,7 @@ public class TFMGRecipeFactory {
         recipe.setValue(ITEM_INGREDIENTS, ingredients);
     }
 
-    private void handlePairedIngredients(RecipeJS recipe, ComponentValueMap from) {
+    private void handlePairedIngredients(RecipeJS recipe, @NotNull ComponentValueMap from) {
         Either<InputFluid, InputItem>[] ingredients = from.getValue(recipe, INGREDIENTS);
 
         List<InputFluid> fluidIngredients = new ArrayList<>();
@@ -169,7 +170,7 @@ public class TFMGRecipeFactory {
         recipe.setValue(INGREDIENTS, ingredients);
     }
 
-    private void handleFluidResults(RecipeJS recipe, ComponentValueMap from) {
+    private void handleFluidResults(RecipeJS recipe, @NotNull ComponentValueMap from) {
         OutputFluid[] results = from.getValue(recipe, FLUID_RESULTS);
 
         if (results.length > maxFluidOutputs) {
@@ -179,7 +180,7 @@ public class TFMGRecipeFactory {
         recipe.setValue(FLUID_RESULTS, results);
     }
 
-    private void handleItemResults(RecipeJS recipe, ComponentValueMap from) {
+    private void handleItemResults(RecipeJS recipe, @NotNull ComponentValueMap from) {
         OutputItem[] results = from.getValue(recipe, ITEM_RESULTS);
 
         if (results.length > maxItemOutputs) {
@@ -189,7 +190,7 @@ public class TFMGRecipeFactory {
         recipe.setValue(ITEM_RESULTS, results);
     }
 
-    private void handlePairedResults(RecipeJS recipe, ComponentValueMap from) {
+    private void handlePairedResults(RecipeJS recipe, @NotNull ComponentValueMap from) {
         Either<OutputFluid, OutputItem>[] results = from.getValue(recipe, RESULTS);
 
         List<OutputFluid> fluidResults = new ArrayList<>();

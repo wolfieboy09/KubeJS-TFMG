@@ -129,7 +129,7 @@ public interface VatRecipeSchema {
         }
 
         public RecipeJS allowAllVatTypes() {
-            return setValue(VAT_TYPES, new String[]{"tfmg:steel_vat", "tfmg:cast_iron_vat", "tfmg", "firebrick_lined_vat"});
+            return setValue(VAT_TYPES, new String[]{"tfmg:steel_vat", "tfmg:cast_iron_vat", "tfmg:firebrick_lined_vat"});
         }
 
         public RecipeJS minSize(int size) {

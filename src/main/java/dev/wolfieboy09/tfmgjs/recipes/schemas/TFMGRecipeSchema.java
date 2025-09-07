@@ -205,8 +205,8 @@ public interface TFMGRecipeSchema {
 
     RecipeSchema ITEM_APPLICATION = new RecipeSchema(ItemApplicationRecipeJS.class, ItemApplicationRecipeJS::new, RESULTS, INGREDIENTS, PROCESSING_TIME, HEAT_REQUIREMENT, KEEP_HELD_ITEM);
 
-    RecipeSchema CASTING = new RecipeSchema(FLUID_INGREDIENTS, RESULTS, PROCESSING_TIME)
-            .constructor(new TFMGRecipeFactory().fluidInputs(FLUID_INGREDIENTS, 1).itemOutputs(ITEM_RESULTS, 1).hasTime().factory, FLUID_INGREDIENTS, RESULTS, PROCESSING_TIME);
+//    RecipeSchema CASTING = new RecipeSchema(FLUID_INGREDIENTS, RESULTS, PROCESSING_TIME)
+//            .constructor(new TFMGRecipeFactory().fluidInputs(FLUID_INGREDIENTS, 1).itemOutputs(ITEM_RESULTS, 1).hasTime().factory, FLUID_INGREDIENTS, RESULTS, PROCESSING_TIME);
     RecipeSchema COKING = new RecipeSchema(ProcessingRecipeJS.class, ProcessingRecipeJS::new, ITEM_INGREDIENTS, RESULTS, PROCESSING_TIME)
             .constructor(new TFMGRecipeFactory().itemInputs(ITEM_INGREDIENTS, 1).results(RESULTS, 1, 2).hasTime().factory, ITEM_INGREDIENTS, RESULTS, PROCESSING_TIME);
     RecipeSchema DISTILLATION = new RecipeSchema(FLUID_INGREDIENTS, FLUID_RESULTS)
