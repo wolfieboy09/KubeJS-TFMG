@@ -10,6 +10,7 @@ import dev.latvian.mods.kubejs.recipe.RecipeExceptionJS;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.component.ComponentValueMap;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeConstructor;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -21,10 +22,10 @@ public class VatRecipeFactory {
     RecipeConstructor.Factory factory = (recipe, schemaType, keys, from) -> {
         //Either<InputFluid, InputItem>[] ingredients = from.getValue(recipe, VatRecipeSchema.INGREDIENTS);
         //Either<OutputFluid, OutputItem>[] results = from.getValue(recipe, VatRecipeSchema.RESULTS);
-        String[] machines = from.getValue(recipe, VatRecipeSchema.MACHINES);
-        String[] vatTypes = from.getValue(recipe, VatRecipeSchema.VAT_TYPES);
+        Block[] machines = from.getValue(recipe, VatRecipeSchema.MACHINES);
+        Block[] vatTypes = from.getValue(recipe, VatRecipeSchema.VAT_TYPES);
         int minSize = from.getValue(recipe, VatRecipeSchema.MIN_SIZE);
-        HeatCondition heatCondition = HeatCondition.deserialize(from.getValue(recipe, VatRecipeSchema.HEAT_REQUIREMENT));
+        HeatCondition heatCondition = from.getValue(recipe, VatRecipeSchema.HEAT_REQUIREMENT);
         long processingTime = from.getValue(recipe, VatRecipeSchema.PROCESSING_TIME_REQUIRED);
 
         handleIngredients(recipe, from);
@@ -35,7 +36,7 @@ public class VatRecipeFactory {
         if (minSize <= 0)
             throw new RecipeExceptionJS("Vat Recipe min size must be greater than 0");
         recipe.setValue(VatRecipeSchema.MIN_SIZE, minSize);
-        recipe.setValue(VatRecipeSchema.HEAT_REQUIREMENT, heatCondition.serialize());
+        recipe.setValue(VatRecipeSchema.HEAT_REQUIREMENT, heatCondition);
         recipe.setValue(VatRecipeSchema.PROCESSING_TIME_REQUIRED, processingTime);
     };
 
