@@ -30,7 +30,7 @@ public class BasicElectrodeJS extends BuilderBase<Electrode> {
         RegistryInfo.ITEM.addBuilder(new ItemBuilder(this.id) {
             @Override
             public Item createObject() {
-                return new Item(new Item.Properties());
+                return new Item(new Item.Properties().stacksTo(1));
             }
         });
     }

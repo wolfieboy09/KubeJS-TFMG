@@ -36,4 +36,10 @@ public class TFMGJSPlugin extends KubeJSPlugin {
             }
         }
     }
+
+//    @Override
+//    public void init() {
+//        TFMGJSRegistryInfo.ELECTRODE.addType("electrode", BasicElectrodeJS.class, BasicElectrodeJS::new);
+//        TFMGJSRegistryInfo.CABLE_TYPE.addType("cable_type", BasicCableJS.class, BasicCableJS::new);
+//    }
 }
