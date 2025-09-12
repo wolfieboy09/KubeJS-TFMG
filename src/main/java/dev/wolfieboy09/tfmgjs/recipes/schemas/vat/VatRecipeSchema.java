@@ -1,6 +1,5 @@
 package dev.wolfieboy09.tfmgjs.recipes.schemas.vat;
 
-import com.drmangotea.tfmg.registry.TFMGBlocks;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Either;
@@ -23,7 +22,6 @@ import dev.wolfieboy09.tfmgjs.recipes.helpers.CreateInputFluid;
 import dev.wolfieboy09.tfmgjs.recipes.helpers.FluidIngredientHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.FluidStack;
 
 @SuppressWarnings("unused")
@@ -31,13 +29,13 @@ public interface VatRecipeSchema {
     RecipeKey<Either<OutputFluid, OutputItem>[]> RESULTS = FluidComponents.OUTPUT_OR_ITEM_ARRAY.key("results");
     RecipeKey<Either<InputFluid, InputItem>[]> INGREDIENTS = FluidComponents.INPUT_OR_ITEM_ARRAY.key("ingredients");
 
-    RecipeKey<Block[]> MACHINES = BlockComponent.BLOCK.asArray().key("machines").defaultOptional().allowEmpty();
-    RecipeKey<Block[]> VAT_TYPES = BlockComponent.BLOCK.asArray().key("allowedVatTypes").defaultOptional().allowEmpty();
+    RecipeKey<String[]> MACHINES = StringComponent.ID.asArray().key("machines").optional(new String[]{}).allowEmpty();
+    RecipeKey<String[]> VAT_TYPES = StringComponent.ID.asArray().key("allowedVatTypes").optional(new String[]{}).allowEmpty();
     RecipeKey<Integer> MIN_SIZE = NumberComponent.INT.key("minSize").optional(1).allowEmpty();
 
     RecipeKey<HeatCondition> HEAT_REQUIREMENT = new EnumComponent<>(HeatCondition.class)
             .key("heatRequirement")
-            .defaultOptional()
+            .optional(HeatCondition.NONE)
             .allowEmpty();
 
     RecipeKey<Long> PROCESSING_TIME_REQUIRED = TimeComponent.TICKS.key("processingTime").optional(100L).alwaysWrite();
@@ -115,16 +113,16 @@ public interface VatRecipeSchema {
             return setValue(HEAT_REQUIREMENT, HeatCondition.SUPERHEATED);
         }
 
-        public RecipeJS machines(Block... machines) {
+        public RecipeJS machines(String... machines) {
             return setValue(MACHINES, machines);
         }
 
-        public RecipeJS allowedVatTypes(Block... types) {
+        public RecipeJS allowedVatTypes(String... types) {
             return setValue(VAT_TYPES, types);
         }
 
         public RecipeJS allowAllVatTypes() {
-            return setValue(VAT_TYPES, new Block[]{TFMGBlocks.STEEL_CHEMICAL_VAT.get(), TFMGBlocks.CAST_IRON_CHEMICAL_VAT.get(), TFMGBlocks.FIREPROOF_CHEMICAL_VAT.get()});
+            return setValue(VAT_TYPES, new String[]{"tfmg:steel_vat", "tfmg:cast_iron_vat", "tfmg:firebrick_lined_vat"});
         }
 
         public RecipeJS minSize(int size) {
@@ -138,5 +136,4 @@ public interface VatRecipeSchema {
 
     RecipeSchema VAT = new RecipeSchema(VatRecipeJS.class, VatRecipeJS::new, INGREDIENTS, RESULTS, MACHINES, VAT_TYPES, MIN_SIZE, PROCESSING_TIME_REQUIRED, HEAT_REQUIREMENT)
             .constructor(new VatRecipeFactory().factory, INGREDIENTS, RESULTS);
-            //.constructor(INGREDIENTS, RESULTS);
 }
