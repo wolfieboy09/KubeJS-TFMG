@@ -29,14 +29,14 @@ public interface VatRecipeSchema {
     RecipeKey<Either<OutputFluid, OutputItem>[]> RESULTS = FluidComponents.OUTPUT_OR_ITEM_ARRAY.key("results");
     RecipeKey<Either<InputFluid, InputItem>[]> INGREDIENTS = FluidComponents.INPUT_OR_ITEM_ARRAY.key("ingredients");
 
-    RecipeKey<String[]> MACHINES = StringComponent.ID.asArray().key("machines").optional(new String[]{}).allowEmpty();
-    RecipeKey<String[]> VAT_TYPES = StringComponent.ID.asArray().key("allowedVatTypes").optional(new String[]{}).allowEmpty();
-    RecipeKey<Integer> MIN_SIZE = NumberComponent.INT.key("minSize").optional(1).allowEmpty();
+    RecipeKey<String[]> MACHINES = StringComponent.ID.asArray().key("machines").optional(new String[]{}).alwaysWrite();
+    RecipeKey<String[]> VAT_TYPES = StringComponent.ID.asArray().key("allowedVatTypes").optional(new String[]{}).alwaysWrite();
+    RecipeKey<Integer> MIN_SIZE = NumberComponent.INT.key("minSize").optional(1).alwaysWrite();
 
     RecipeKey<HeatCondition> HEAT_REQUIREMENT = new EnumComponent<>(HeatCondition.class)
             .key("heatRequirement")
             .optional(HeatCondition.NONE)
-            .allowEmpty();
+            .alwaysWrite();
 
     RecipeKey<Long> PROCESSING_TIME_REQUIRED = TimeComponent.TICKS.key("processingTime").optional(100L).alwaysWrite();
 

@@ -8,8 +8,10 @@ import dev.latvian.mods.kubejs.item.InputItem;
 import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.RecipeExceptionJS;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
+import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.ComponentValueMap;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeConstructor;
+import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -18,12 +20,20 @@ import java.util.List;
 public class VatRecipeFactory {
     public VatRecipeFactory() {}
 
+    private static <T> T getOrDefault(RecipeJS recipe, RecipeSchemaType schemaType, @NotNull ComponentValueMap from, @NotNull RecipeKey<T> recipeKey) {
+        if (recipeKey.optional() && from.getValue(recipe, recipeKey) == null) {
+            return recipeKey.optional.getDefaultValue(schemaType);
+        }
+        return from.getValue(recipe, recipeKey);
+    }
+
     RecipeConstructor.Factory factory = (recipe, schemaType, keys, from) -> {
-        String[] machines = from.getValue(recipe, VatRecipeSchema.MACHINES);
-        String[] vatTypes = from.getValue(recipe, VatRecipeSchema.VAT_TYPES);
-        int minSize = from.getValue(recipe, VatRecipeSchema.MIN_SIZE);
-        HeatCondition heatCondition = from.getValue(recipe, VatRecipeSchema.HEAT_REQUIREMENT);
-        long processingTime = from.getValue(recipe, VatRecipeSchema.PROCESSING_TIME_REQUIRED);
+        String[] machines = getOrDefault(recipe, schemaType, from, VatRecipeSchema.MACHINES);
+        String[] vatTypes = getOrDefault(recipe, schemaType, from, VatRecipeSchema.VAT_TYPES);
+        Integer minSize =  getOrDefault(recipe, schemaType, from, VatRecipeSchema.MIN_SIZE);
+        HeatCondition heatCondition = getOrDefault(recipe, schemaType, from, VatRecipeSchema.HEAT_REQUIREMENT);
+        Long processingTime = getOrDefault(recipe, schemaType, from, VatRecipeSchema.PROCESSING_TIME_REQUIRED);
+
 
         handleIngredients(recipe, from);
         handleResults(recipe, from);
@@ -37,7 +47,7 @@ public class VatRecipeFactory {
         recipe.setValue(VatRecipeSchema.PROCESSING_TIME_REQUIRED, processingTime);
     };
 
-    private void handleIngredients(RecipeJS recipe, @NotNull ComponentValueMap from) {
+    private void handleIngredients(RecipeJS recipe,  @NotNull ComponentValueMap from) {
         Either<InputFluid, InputItem>[] ingredients = from.getValue(recipe, VatRecipeSchema.INGREDIENTS);
 
         List<InputFluid> fluidIngredients = new ArrayList<>();
