@@ -20,6 +20,7 @@ import java.util.List;
 public class VatRecipeFactory {
     public VatRecipeFactory() {}
 
+    // It works, so sssshhhhhh, and don't complain to me
     private static <T> T getOrDefault(RecipeJS recipe, RecipeSchemaType schemaType, @NotNull ComponentValueMap from, @NotNull RecipeKey<T> recipeKey) {
         if (recipeKey.optional() && from.getValue(recipe, recipeKey) == null) {
             return recipeKey.optional.getDefaultValue(schemaType);
