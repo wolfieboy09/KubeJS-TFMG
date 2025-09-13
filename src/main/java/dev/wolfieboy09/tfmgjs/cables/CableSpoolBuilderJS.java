@@ -16,14 +16,14 @@ import org.jetbrains.annotations.ApiStatus;
 
 @SuppressWarnings("unused")
 @ApiStatus.Experimental
-public class BasicCableJS extends BuilderBase<CableType> {
+public class CableSpoolBuilderJS extends BuilderBase<CableType> {
     private final Item spoolItem = new Item(new Item.Properties());
     // Soooo a bad idea....
     private final ItemEntry<SpoolItem> cableEntry = TFMGItems.spoolItem(this.spoolItem.getDescriptionId().split(":", 1)[1], this.color, this.id).register();
 
     private int color = 0xFFFFFF;
 
-    public BasicCableJS(ResourceLocation i) {
+    public CableSpoolBuilderJS(ResourceLocation i) {
         super(i);
     }
 
@@ -43,7 +43,7 @@ public class BasicCableJS extends BuilderBase<CableType> {
 
 
     @Info("Set's the bar's color")
-    public BasicCableJS color(int color) {
+    public CableSpoolBuilderJS color(int color) {
         this.color = color;
         return this;
     }

@@ -5,6 +5,8 @@ import com.simibubi.create.content.processing.recipe.ProcessingRecipeSerializer;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
+import dev.wolfieboy09.tfmgjs.cables.CableSpoolBuilderJS;
+import dev.wolfieboy09.tfmgjs.electrodes.ElectrodeBuilderJS;
 import dev.wolfieboy09.tfmgjs.recipes.schemas.TFMGRecipeSchema;
 import dev.wolfieboy09.tfmgjs.recipes.schemas.casting.CastingSchema;
 import dev.wolfieboy09.tfmgjs.recipes.schemas.vat.VatRecipeSchema;
@@ -37,9 +39,9 @@ public class TFMGJSPlugin extends KubeJSPlugin {
         }
     }
 
-//    @Override
-//    public void init() {
-//        TFMGJSRegistryInfo.ELECTRODE.addType("electrode", BasicElectrodeJS.class, BasicElectrodeJS::new);
-//        TFMGJSRegistryInfo.CABLE_TYPE.addType("cable_type", BasicCableJS.class, BasicCableJS::new);
-//    }
+    @Override
+    public void init() {
+        TFMGJSRegistryInfo.ELECTRODE.addType("electrode", ElectrodeBuilderJS.class, ElectrodeBuilderJS::new);
+        TFMGJSRegistryInfo.CABLE_TYPE.addType("cable_type", CableSpoolBuilderJS.class, CableSpoolBuilderJS::new);
+    }
 }
