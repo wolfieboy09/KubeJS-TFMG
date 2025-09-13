@@ -13,11 +13,12 @@ import dev.wolfieboy09.tfmgjs.TFMGJSRegistryInfo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 @ApiStatus.Experimental
 public class ElectrodeBuilderJS extends BuilderBase<Electrode> {
     private final Electrode.Properties electrodeProperties = new Electrode.Properties(this.id)
-            .operationId(this.id.toString());
+            .operationId(this.id.toString()); // Default to the electrode's namespace
             //TODO .item() requires an ItemEntry<?> from registrate
     private final Item.Properties electrodeItemProperties = new Item.Properties();
 
@@ -30,6 +31,14 @@ public class ElectrodeBuilderJS extends BuilderBase<Electrode> {
     })
     public ElectrodeBuilderJS resistance(int resistance) {
         this.electrodeProperties.resistance(resistance);
+        return this;
+    }
+
+    @Info(value = "Set's the operation ID for the chemical vat machines. Defaults to the namespace given", params = {
+            @Param("The new operation id")
+    })
+    public ElectrodeBuilderJS operationId(@NotNull ResourceLocation operationId) {
+        this.electrodeProperties.operationId(operationId.toString());
         return this;
     }
 
