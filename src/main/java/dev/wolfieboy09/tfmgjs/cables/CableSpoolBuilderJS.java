@@ -19,7 +19,7 @@ import org.jetbrains.annotations.ApiStatus;
 public class CableSpoolBuilderJS extends BuilderBase<CableType> {
     private final Item spoolItem = new Item(new Item.Properties());
     // Soooo a bad idea....
-    //private final ItemEntry<SpoolItem> cableEntry = TFMGItems.spoolItem(this.spoolItem.getDescriptionId().split(":", 1)[1], this.color, this.id).register();
+    private final ItemEntry<SpoolItem> cableEntry = TFMGItems.spoolItem(this.spoolItem.getDescriptionId().split(":", 1)[1], this.color, this.id).register();
 
     private int color = 0xFFFFFF;
 
@@ -37,7 +37,7 @@ public class CableSpoolBuilderJS extends BuilderBase<CableType> {
     @HideFromJS
     public CableType createObject() {
         return new CableType(new CableType.Properties(this.id)
-                //.spool(this.cableEntry) //TODO Requires an ItemEntry<SpoolItem>
+                .spool(this.cableEntry) //TODO Requires an ItemEntry<SpoolItem>
                 .color(this.color));
     }
 
