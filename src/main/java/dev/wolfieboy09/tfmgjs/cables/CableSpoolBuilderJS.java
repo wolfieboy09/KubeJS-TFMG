@@ -4,27 +4,19 @@ import com.drmangotea.tfmg.content.electricity.connection.cable_type.CableType;
 import com.drmangotea.tfmg.content.machinery.misc.winding_machine.SpoolItem;
 import com.drmangotea.tfmg.registry.TFMGItems;
 import com.tterrag.registrate.util.entry.ItemEntry;
-import dev.latvian.mods.kubejs.item.ItemBuilder;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.wolfieboy09.tfmgjs.TFMGJSRegistryInfo;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import org.jetbrains.annotations.ApiStatus;
 
-@SuppressWarnings("unused")
-@ApiStatus.Experimental
 public class CableSpoolBuilderJS extends BuilderBase<CableType> {
-    private final Item spoolItem = new Item(new Item.Properties());
-    // Soooo a bad idea....
-    private final ItemEntry<SpoolItem> cableEntry = TFMGItems.spoolItem(this.spoolItem.getDescriptionId().split(":", 1)[1], this.color, this.id).register();
-
     private int color = 0xFFFFFF;
+    private ItemEntry<SpoolItem> cableEntry;
 
-    public CableSpoolBuilderJS(ResourceLocation i) {
-        super(i);
+    public CableSpoolBuilderJS(ResourceLocation id) {
+        super(id);
     }
 
     @Override
@@ -37,25 +29,24 @@ public class CableSpoolBuilderJS extends BuilderBase<CableType> {
     @HideFromJS
     public CableType createObject() {
         return new CableType(new CableType.Properties(this.id)
-                .spool(this.cableEntry) //TODO Requires an ItemEntry<SpoolItem>
+                .spool(this.cableEntry)
                 .color(this.color));
     }
 
-
-    @Info("Set's the bar's color")
+    @Info("Set's the cable's color")
     public CableSpoolBuilderJS color(int color) {
-        this.color = color;
+         this.color = color;
         return this;
     }
 
     @Override
     @HideFromJS
     public void createAdditionalObjects() {
-        RegistryInfo.ITEM.addBuilder(new ItemBuilder(this.id) {
-            @Override
-            public Item createObject() {
-                return spoolItem;
-            }
-        });
+        buildEntries();
+    }
+
+    private void buildEntries() {
+        String spoolName = this.id.getPath() + "_spool";
+        this.cableEntry = TFMGItems.spoolItem(spoolName, this.color, this.id).register();
     }
 }

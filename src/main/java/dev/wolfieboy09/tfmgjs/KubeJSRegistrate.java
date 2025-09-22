@@ -12,6 +12,7 @@ import com.tterrag.registrate.util.nullness.NonNullFunction;
 import dev.latvian.mods.kubejs.KubeJS;
 import net.createmod.catnip.lang.FontHelper;
 
+// Code from TFMG's Registrate, pointing to KubeJS's mod id
 public class KubeJSRegistrate extends CreateRegistrate {
     public static final KubeJSRegistrate REGISTRATE = create();
 
