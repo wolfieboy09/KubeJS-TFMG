@@ -3,7 +3,6 @@ package dev.wolfieboy09.tfmgjs.electrodes;
 import com.drmangotea.tfmg.content.machinery.vat.electrode_holder.electrode.Electrode;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
-import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import dev.latvian.mods.rhino.util.HideFromJS;
@@ -48,10 +47,10 @@ public class ElectrodeBuilderJS extends BuilderBase<Electrode> {
         return this;
     }
 
-    @Override
-    public RegistryInfo<Electrode> getRegistryType() {
-        return TFMGJSRegistryInfo.ELECTRODE;
-    }
+//    @Override
+//    public RegistryInfo<Electrode> getRegistryType() {
+//        return TFMGJSRegistryInfo.ELECTRODE;
+//    }
 
     @Override
     public Electrode createObject() {
@@ -61,12 +60,12 @@ public class ElectrodeBuilderJS extends BuilderBase<Electrode> {
         return new Electrode(electrodeProperties);
     }
 
-    @Override
-    public void createAdditionalObjects() {
-        if (!built) {
-            buildEntries();
-        }
-    }
+//    @Override
+//    public void createAdditionalObjects() {
+//        if (!built) {
+//            buildEntries();
+//        }
+//    }
 
     @HideFromJS
     private void buildEntries() {

@@ -4,8 +4,8 @@ import com.drmangotea.tfmg.content.electricity.connection.cable_type.CableType;
 import com.drmangotea.tfmg.content.machinery.misc.winding_machine.SpoolItem;
 import com.drmangotea.tfmg.registry.TFMGItems;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import dev.latvian.mods.kubejs.registry.AdditionalObjectRegistry;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
-import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.wolfieboy09.tfmgjs.TFMGJSRegistryInfo;
@@ -19,11 +19,11 @@ public class CableSpoolBuilderJS extends BuilderBase<CableType> {
         super(id);
     }
 
-    @Override
-    @HideFromJS
-    public RegistryInfo<?> getRegistryType() {
-        return TFMGJSRegistryInfo.CABLE_TYPE;
-    }
+//    @Override
+//    @HideFromJS
+//    public RegistryInfo<?> getRegistryType() {
+//        return TFMGJSRegistryInfo.CABLE_TYPE;
+//    }
 
     @Override
     @HideFromJS
@@ -39,14 +39,17 @@ public class CableSpoolBuilderJS extends BuilderBase<CableType> {
         return this;
     }
 
-    @Override
-    @HideFromJS
-    public void createAdditionalObjects() {
-        buildEntries();
-    }
+//    @Override
+//    @HideFromJS
+//    public void createAdditionalObjects() {
+//        buildEntries();
+//    }
 
-    private void buildEntries() {
-        String spoolName = this.id.getPath() + "_spool";
-        this.cableEntry = TFMGItems.spoolItem(spoolName, this.color, this.id).register();
-    }
+
+//    @Override
+//    public void createAdditionalObjects(AdditionalObjectRegistry registry) {
+//        String spoolName = this.id.getPath() + "_spool";
+//        this.cableEntry = TFMGItems.spoolItem(spoolName, this.color, this.id).register();
+//        registry.add(this.cableEntry);
+//    }
 }

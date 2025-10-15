@@ -7,48 +7,43 @@ import com.mojang.datafixers.util.Either;
 import com.simibubi.create.content.processing.recipe.HeatCondition;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
-import com.simibubi.create.foundation.recipe.BlockTagIngredient;
-import dev.latvian.mods.kubejs.fluid.FluidStackJS;
-import dev.latvian.mods.kubejs.fluid.InputFluid;
-import dev.latvian.mods.kubejs.fluid.OutputFluid;
-import dev.latvian.mods.kubejs.item.InputItem;
-import dev.latvian.mods.kubejs.item.OutputItem;
-import dev.latvian.mods.kubejs.item.ingredient.TagContext;
-import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
-import dev.latvian.mods.kubejs.util.MapJS;
 import dev.wolfieboy09.tfmgjs.recipes.helpers.CreateInputFluid;
 import dev.wolfieboy09.tfmgjs.recipes.helpers.FluidIngredientHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+
+import java.util.List;
 
 public interface TFMGRecipeSchema {
-    RecipeKey<Either<OutputFluid, OutputItem>[]> RESULTS = FluidComponents.OUTPUT_OR_ITEM_ARRAY.key("results");
-    RecipeKey<OutputFluid[]> FLUID_RESULTS = FluidComponents.OUTPUT_ARRAY.key("results");
-    RecipeKey<OutputItem[]> ITEM_RESULTS = ItemComponents.OUTPUT_ARRAY.key("results");
+    RecipeKey<List<Either<SizedFluidIngredient, SizedIngredient>>> RESULTS = SizedFluidIngredientComponent.FLAT.instance().or(SizedIngredientComponent.SIZED_INGREDIENT.instance()).asList().outputKey("results");
+    RecipeKey<List<FluidStack>> FLUID_RESULTS = FluidComponents.OUTPUT_ARRAY.key("results");
+    RecipeKey<FluidStack[]> ITEM_RESULTS = ItemComponents.OUTPUT_ARRAY.key("results");
 
-    RecipeKey<Either<InputFluid, InputItem>[]> INGREDIENTS = FluidComponents.INPUT_OR_ITEM_ARRAY.key("ingredients");
-    RecipeKey<InputFluid[]> FLUID_INGREDIENTS = FluidComponents.INPUT_ARRAY.key("ingredients");
-    RecipeKey<InputItem[]> ITEM_INGREDIENTS = ItemComponents.INPUT_ARRAY.key("ingredients");
+    RecipeKey<Either<FluidStack, ItemStack>[]> INGREDIENTS = FluidComponents.INPUT_OR_ITEM_ARRAY.key("ingredients");
+    RecipeKey<FluidStack[]> FLUID_INGREDIENTS = FluidComponents.INPUT_ARRAY.key("ingredients");
+    RecipeKey<FluidStack[]> ITEM_INGREDIENTS = ItemComponents.INPUT_ARRAY.key("ingredients");
 
-    RecipeKey<Either<InputFluid, InputItem>[]> INGREDIENTS_UNWRAPPED = new RecipeComponentWithParent<Either<InputFluid, InputItem>[]>() {
+    RecipeKey<Either<FluidStack, InputItem>[]> INGREDIENTS_UNWRAPPED = new RecipeComponentWithParent<Either<FluidStack, InputItem>[]>() {
         @Override
-        public RecipeComponent<Either<InputFluid, InputItem>[]> parentComponent() {
+        public RecipeComponent<Either<FluidStack, InputItem>[]> parentComponent() {
             return INGREDIENTS.component;
         }
 
         @Override
-        public JsonElement write(RecipeJS recipe, Either<InputFluid, InputItem>[] value) {
+        public JsonElement write(RecipeJS recipe, Either<FluidStack, InputItem>[] value) {
             // during writing, unwrap all stacked input items
             JsonArray json = new JsonArray();
             for (var either : value) {
                 either.ifLeft(fluid -> json.add(FluidComponents.INPUT.write(recipe, fluid)))
                         .ifRight(item -> {
                             for (InputItem unwrapped : item.unwrap()) {
-                                json.add(ItemComponents.INPUT.write(recipe, unwrapped));
+                                json.add(ItemStackComponent.INPUT.write(recipe, unwrapped));
                             }
                         });
             }
@@ -56,9 +51,9 @@ public interface TFMGRecipeSchema {
         }
     }.key("ingredients");
 
-    RecipeKey<InputFluid[]> FLUID_INGREDIENT_UNWRAPPED = new RecipeComponentWithParent<InputFluid[]>() {
+    RecipeKey<FluidStack[]> FLUID_INGREDIENT_UNWRAPPED = new RecipeComponentWithParent<FluidStack[]>() {
         @Override
-        public RecipeComponent<InputFluid[]> parentComponent() {
+        public RecipeComponent<FluidStack[]> parentComponent() {
             return FLUID_INGREDIENTS.component;
         }
 

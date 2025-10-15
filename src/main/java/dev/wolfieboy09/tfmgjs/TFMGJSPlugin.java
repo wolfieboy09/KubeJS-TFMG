@@ -1,10 +1,10 @@
 package dev.wolfieboy09.tfmgjs;
 
 import com.drmangotea.tfmg.registry.TFMGRecipeTypes;
-import com.simibubi.create.content.processing.recipe.ProcessingRecipeSerializer;
-import dev.latvian.mods.kubejs.KubeJSPlugin;
+import com.simibubi.create.content.processing.recipe.StandardProcessingRecipe;
+import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
-import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
+import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
 import dev.wolfieboy09.tfmgjs.recipes.schemas.TFMGRecipeSchema;
 import dev.wolfieboy09.tfmgjs.recipes.schemas.casting.CastingSchema;
 import dev.wolfieboy09.tfmgjs.recipes.schemas.vat.VatRecipeSchema;
@@ -12,7 +12,7 @@ import dev.wolfieboy09.tfmgjs.recipes.schemas.vat.VatRecipeSchema;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TFMGJSPlugin extends KubeJSPlugin {
+public class TFMGJSPlugin implements KubeJSPlugin {
     private static final Map<TFMGRecipeTypes, RecipeSchema> recipeSchemas = new HashMap<>();
 
     static {
@@ -26,16 +26,16 @@ public class TFMGJSPlugin extends KubeJSPlugin {
         recipeSchemas.put(TFMGRecipeTypes.VAT_MACHINE_RECIPE, VatRecipeSchema.VAT);
     }
 
-
     @Override
-    public void registerRecipeSchemas(RegisterRecipeSchemasEvent event) {
+    public void registerRecipeSchemas(RecipeSchemaRegistry registry) {
         for (TFMGRecipeTypes entry : TFMGRecipeTypes.values()) {
-            if (entry.getSerializer() instanceof ProcessingRecipeSerializer<?>) {
+            if (entry.getSerializer() instanceof StandardProcessingRecipe<?>) {
                 RecipeSchema schema = recipeSchemas.getOrDefault(entry, TFMGRecipeSchema.PROCESSING_DEFAULT);
-                event.register(entry.getId(), schema);
+                registry.register(entry.id, schema);
             }
         }
     }
+
 
 //    @Override
 //    public void init() {
