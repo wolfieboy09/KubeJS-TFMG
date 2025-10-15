@@ -1,10 +1,16 @@
 plugins {
-    id "idea"
-    id "net.neoforged.moddev.legacyforge" version "2.0.107"
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.neoforged.moddev' version '2.0.107'
+    id 'idea'
 }
 
 apply from: "./gradle/java.gradle"
 apply from: "gradle/property_loader.gradle"
+
+tasks.named('wrapper', Wrapper).configure {
+    distributionType = Wrapper.DistributionType.BIN
+}
 
 version = mod_version
 group = mod_group_id
@@ -13,13 +19,7 @@ base {
     archivesName = mod_id
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-
-//def refmap
-//mixin {
-//    refmap = add sourceSets.main, 'tfmgjs.refmap.json'
-//    config 'tfmgjs.mixins.json'
-//}
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
@@ -30,80 +30,67 @@ idea {
     }
 }
 
-legacyForge {
-    version = "$minecraft_version-$forge_version"
-
+neoForge {
+    version = neo_version
 
     validateAccessTransformers = false
 
     if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
-        accessTransformers.from "src/main/resources/META-INF/accesstransformer.cfg"
+        accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
     }
 
     parchment {
-        minecraftVersion = minecraft_version
-        mappingsVersion = parchment_version
+        minecraftVersion = parchment_minecraft_version
+        mappingsVersion = parchment_mappings_version
     }
+
     mods {
-        tfmgjs {
-            sourceSet sourceSets.main
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
         }
     }
 
     runs {
-        configureEach {
-            systemProperty 'forge.logging.markers', ''
-            systemProperty 'forge.logging.console.level', 'info'
-            jvmArguments = ["-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition"]
-
-            systemProperty 'mixin.debug.export', 'true'
-            systemProperty 'mixin.debug.verbose', 'true'
-            programArgument '-mixin.config=tfmgjs.mixins.json'
-        }
-
         client {
             client()
-            ideName = "Client"
 
-            gameDirectory = project.file('run')
-            systemProperty('forge.enabledGameTestNamespaces', "metallurgica")
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
         }
 
         server {
             server()
-            ideName = "Server"
+            programArgument '--nogui'
 
-            gameDirectory.set(file('run/server'))
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
         }
 
         gameTestServer {
             type = "gameTestServer"
-            sourceSet = sourceSets.test
-            ideName = "Game Tests"
-
-            gameDirectory.set(file('run/gametest'))
-            systemProperty('forge.enabledGameTestNamespaces', "metallurgica")
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
         }
 
         data {
             data()
-            sourceSet = sourceSets.main
-            ideName = "Data Generation"
 
-            gameDirectory.set(file('run/data'))
+            programArguments.addAll '--mod', mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
 
-            systemProperty 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
-            systemProperty 'forge.logging.console.level', 'debug'
-            programArguments.addAll("--mod", mod_id as String, "--all", "--output", file("src/generated/resources/").getAbsolutePath(), "--existing", file("src/main/resources").getAbsolutePath())
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.INFO
+
+            jvmArguments = ["-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition"]
         }
     }
 }
 
-sourceSets.main {
-    resources {
-        srcDir 'src/generated/resources'
-        exclude '.cache/'
-    }
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+    exclude '.cache/'
+}
+
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
 }
 
 repositories {
@@ -124,7 +111,6 @@ repositories {
             includeGroup "dev.architectury"
         }
     }
-
     maven {
         url "https://maven.latvian.dev/releases"
         content {
@@ -132,8 +118,13 @@ repositories {
             includeGroup "dev.latvian.apps"
         }
     }
-    maven { url = "https://maven.blamejared.com" } // JEI, Vazkii's Mods
-
+    maven {
+        url 'https://jitpack.io'
+        content {
+            includeGroup "com.github.rtyley"
+        }
+    }
+    maven { url = "https://maven.blamejared.com" }
     maven { url = "https://maven.createmod.net" }
     maven { url = "https://maven.ithundxr.dev/mirror" }
     maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" }
@@ -142,91 +133,80 @@ repositories {
 dependencies {
     implementation 'org.jetbrains:annotations:22.0.0'
 
-    modImplementation("com.tterrag.registrate:Registrate:${registrate_version}")
+    implementation("com.tterrag.registrate:Registrate:${registrate_version}")
 
-    implementation("io.github.llamalad7:mixinextras-forge:${mixin_extras_version}")
-
-    modImplementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
-    modCompileOnly("dev.engine-room.flywheel:flywheel-forge-api-${flywheel_minecraft_version}:${flywheel_version}")
-    modRuntimeOnly("dev.engine-room.flywheel:flywheel-forge-${flywheel_minecraft_version}:${flywheel_version}") {
+    implementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
+    compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${minecraft_version}:${flywheel_version}")
+    runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}") {
         version {
             strictly "[1.0,2.0)"
             prefer flywheel_version
         }
     }
-    modImplementation("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
+    implementation("net.createmod.ponder:Ponder-NeoForge-${minecraft_version}:${ponder_version}")
 
-    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${mixin_extras_version}"))
+    implementation("curse.maven:create-industry-693815:7020555")
 
-    modImplementation("curse.maven:create-industry-693815:6729106")
+    api("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
+    interfaceInjectionData("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
 
-    modImplementation("dev.latvian.mods:kubejs-forge:${kubejs_version}")
-    modImplementation("dev.latvian.mods:rhino-forge:${rhino_version}")
-    modImplementation("dev.architectury:architectury-forge:${architectury_version}")
-
-    modRuntimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}") { transitive = false }
-
-    //annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
+    localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}") { transitive = false }
 }
 
-compileJava.options.encoding = 'UTF-8'
-
-processResources {
-    //def buildProps = project.properties.clone()
-
-    //buildProps.put('file', [jarVersion: project.version])
-
-    def replaceProperties =  [
-            "loader_version_range": loader_version_range,
-            "mod_license": mod_license,
-            "mod_version": mod_version,
-            "mod_name": mod_name,
-            "mod_id": mod_id,
-            "mod_authors": mod_authors,
-            "mod_description": mod_description,
-            "forge_version_range": forge_version_range,
-            "minecraft_version_range": minecraft_version_range,
-            "kubejs_version": kubejs_version,
-            "tfmg_version": tfmg_version,
-            "jarVersion": project.version
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version            : neo_version,
+            loader_version_range   : loader_version_range,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            mod_version            : mod_version,
+            mod_authors            : mod_authors,
+            mod_description        : mod_description,
+            kubejs_version         : kubejs_version,
+            tfmg_version           : tfmg_version,
+            jarVersion             : project.version
     ]
     inputs.properties replaceProperties
-
-    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
-        //expand buildProps
-        expand replaceProperties
-    }
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
 }
 
-compileJava {
-    options.compilerArgs = ['-Xdiags:verbose']
-}
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
 
 jar {
-    //from('LICENSE') {
-    //    rename { "${it}_${archivesBaseName}" }
-    //}
-
-    //manifest.attributes(["MixinConfigs": "tfmgjs.mixins.json"])
+    // from('LICENSE') {
+    //     rename { "${it}_${archivesBaseName}" }
+    // }
 }
 
 tasks.named("sourcesJar") {
-    //manifest.attributes([])
+    // manifest.attributes([])
 }
 
 final slimJar = tasks.register("slimJar", Jar) {
     archiveClassifier = "slim"
     from(sourceSets.main.output)
-    //from(refmap)
-    //manifest.attributes(["MixinConfigs": "tfmgjs.mixins.json"])
 }
-obfuscation.reobfuscate(slimJar, sourceSets.main)
 
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/repo"
+        }
+    }
+}
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-}
-
-compileJava {
     options.compilerArgs = ['-Xdiags:verbose']
 }
