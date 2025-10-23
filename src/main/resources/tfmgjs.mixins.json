@@ -2,10 +2,11 @@
   "required": true,
   "minVersion": "0.8",
   "priority": 10000,
-  "package": "dev.wolfieboy09.tfmgjs.mixins",
+  "package": "dev.wolfieboy09.tfmgjs.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "tfmgjs.refmap.json",
   "mixins": [
+    "FluidTagIngredientAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

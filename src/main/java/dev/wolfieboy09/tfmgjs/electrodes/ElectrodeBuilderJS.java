@@ -7,7 +7,6 @@ import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.wolfieboy09.tfmgjs.KubeJSRegistrate;
-import dev.wolfieboy09.tfmgjs.TFMGJSRegistryInfo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.NotNull;
