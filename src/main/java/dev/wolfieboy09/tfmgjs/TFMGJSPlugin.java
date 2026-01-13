@@ -6,8 +6,6 @@ import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
 import dev.wolfieboy09.tfmgjs.recipes.schemas.TFMGRecipeSchema;
-import dev.wolfieboy09.tfmgjs.recipes.schemas.casting.CastingSchema;
-import dev.wolfieboy09.tfmgjs.recipes.schemas.vat.VatRecipeSchema;
 
 import java.util.HashMap;
 import java.util.Map;

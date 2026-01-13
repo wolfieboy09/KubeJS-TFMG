@@ -1,7 +1,6 @@
 package dev.wolfieboy09.tfmgjs.recipes.schemas;
 
 import com.mojang.datafixers.util.Either;
-import com.simibubi.create.foundation.fluid.FluidIngredient;
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.ComponentValueMap;
@@ -13,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 
 import javax.annotation.Nullable;
 import java.util.List;
