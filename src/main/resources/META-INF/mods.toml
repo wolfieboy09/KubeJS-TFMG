@@ -31,7 +31,7 @@ description='''${mod_description}'''
 [[dependencies.tfmgjs]]
     modId="create"
     mandatory=true
-    versionRange="[6.0.6,)"
+    versionRange="[${create_toml_version},)"
     ordering="NONE"
     side="BOTH"
 

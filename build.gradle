@@ -167,7 +167,8 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             mod_description        : mod_description,
             kubejs_version         : kubejs_version,
             tfmg_version           : tfmg_version,
-            jarVersion             : project.version
+            jarVersion             : project.version,
+            create_toml_version    : create_toml_version
     ]
     inputs.properties replaceProperties
     expand replaceProperties
