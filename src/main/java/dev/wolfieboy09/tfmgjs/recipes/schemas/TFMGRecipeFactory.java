@@ -4,11 +4,7 @@ import com.mojang.datafixers.util.Either;
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.ComponentValueMap;
-import dev.latvian.mods.kubejs.recipe.schema.KubeRecipeFactory;
-import dev.latvian.mods.kubejs.recipe.schema.RecipeConstructor;
-import dev.latvian.mods.kubejs.recipe.schema.RecipeFactoryRegistry;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -34,10 +30,10 @@ public final class TFMGRecipeFactory {
     boolean hasProcessingTime = false;
     boolean usesEnergy = false;
 
-    private int maxItemOutputs = 1;
-    private int maxFluidOutputs = 1;
-    private int maxItemInputs = 1;
-    private int maxFluidInputs = 1;
+    private int maxItemOutputs = 0;
+    private int maxFluidOutputs = 0;
+    private int maxItemInputs = 0;
+    private int maxFluidInputs = 0;
 
     public TFMGRecipeFactory() {}
 
