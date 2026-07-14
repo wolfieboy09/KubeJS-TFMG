@@ -1,1 +1,1 @@
-dev.wolfieboy09.tfmgjs.TFMGJSPlugin
+dev.wolfieboy09.tfmgjs.TFMGJSPlugin tfmg

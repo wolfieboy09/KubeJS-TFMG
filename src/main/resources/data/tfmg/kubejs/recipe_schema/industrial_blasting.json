@@ -1,0 +1,20 @@
+{
+  "parent": "tfmg:base/processing_with_time",
+  "recipe_factory": "tfmgjs:processing",
+  "keys": [
+    {
+      "name": "hot_air_usage",
+      "type": "int",
+      "optional": 0,
+      "excluded": true,
+      "function_names": ["hotAirUsage"]
+    }
+  ],
+  "constructors": [
+    { "keys": ["ingredients", "results"] },
+    { "keys": ["ingredients", "results", "processing_time"] }
+  ],
+  "merge": {
+    "keys": true
+  }
+}

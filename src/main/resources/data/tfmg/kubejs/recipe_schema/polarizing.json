@@ -1,0 +1,7 @@
+{
+  "parent": "tfmg:base/processing_with_time",
+  "recipe_factory": "tfmgjs:processing",
+  "constructors": [
+    { "keys": ["ingredients", "results"] }
+  ]
+}
