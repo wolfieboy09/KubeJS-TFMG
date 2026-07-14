@@ -1,0 +1,5 @@
+// Expected: a VAT recipe must have non-empty combined input and output sides.
+ServerEvents.recipes(event => {
+  event.recipes.tfmg.vat_machine_recipe([], [])
+    .id('kubejs:tfmgjs_negative/vat_empty')
+})

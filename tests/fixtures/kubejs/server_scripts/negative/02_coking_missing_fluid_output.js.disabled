@@ -1,0 +1,8 @@
+// Expected: Coking requires one item output and two fluid outputs.
+ServerEvents.recipes(event => {
+  event.recipes.tfmg.coking(
+    ['minecraft:oak_log'],
+    ['minecraft:charcoal', Fluid.of('minecraft:water', 250)],
+    100
+  ).id('kubejs:tfmgjs_negative/coking_missing_fluid_output')
+})

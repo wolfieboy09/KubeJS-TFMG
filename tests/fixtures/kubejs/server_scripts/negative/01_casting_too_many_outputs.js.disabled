@@ -1,0 +1,8 @@
+// Expected: Casting accepts exactly one item output.
+ServerEvents.recipes(event => {
+  event.recipes.tfmg.casting(
+    [Fluid.of('minecraft:lava', 250)],
+    ['minecraft:stone', 'minecraft:cobblestone'],
+    80
+  ).id('kubejs:tfmgjs_negative/casting_too_many_outputs')
+})

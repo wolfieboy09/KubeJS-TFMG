@@ -1,0 +1,8 @@
+// Expected: Industrial Blasting accepts at most two item inputs.
+ServerEvents.recipes(event => {
+  event.recipes.tfmg.industrial_blasting(
+    ['minecraft:raw_iron', 'minecraft:coal', 'minecraft:blaze_powder'],
+    [Fluid.of('minecraft:lava', 250), Fluid.of('minecraft:water', 250)],
+    200
+  ).id('kubejs:tfmgjs_negative/industrial_blasting_too_many_inputs')
+})
