@@ -54,7 +54,6 @@ The packaged metadata was also inspected after the final source corrections. Cli
 
 ## Project documentation
 
-- [Project architecture, dependency matrix, and research notes](PROJECT_CONTEXT.md)
 - [Migration from Minecraft 1.20.1](MIGRATION_1.20.1_TO_1.21.1.md)
 - [Runtime fixture procedure](tests/fixtures/kubejs/README.md)
 
