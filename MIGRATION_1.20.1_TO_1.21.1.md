@@ -6,7 +6,7 @@ This guide covers the intentional script-facing differences in the NeoForge 1.21
 
 The 1.21.1 build requires Java 21, NeoForge, KubeJS, KubeJS Create, Create, and Create: The Factory Must Grow. KubeJS Create is a new required dependency because it supplies Create's item/fluid recipe components and processing result support.
 
-Both supported profiles have passed dedicated-server startup and explicit recipe reloads with KubeJS builds 368 and 370. TFMG 1.2.2 with Create 6.0.10 is the `current` profile and adds VAT pressure. Client, JEI, and actual machine execution still require an interactive release check. Do not mix versions across profiles without testing the complete set.
+Both supported profiles have passed dedicated-server startup and explicit recipe reloads on NeoForge 21.1.233 with KubeJS builds 368 and 370. TFMG 1.2.2 with Create 6.0.10 is the `current` profile and adds VAT pressure. Client, JEI, and actual machine execution still require an interactive release check on NeoForge 21.1.233. Do not mix versions across profiles without testing the complete set.
 
 ## What stays familiar
 

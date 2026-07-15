@@ -9,7 +9,7 @@ The Minecraft 1.20.1 release remains on `main`. Do not combine the two source li
 
 ## Requirements
 
-- Java 21 and NeoForge 21.1.x
+- Java 21 and NeoForge 21.1.233
 - KubeJS 2101.7.2
 - KubeJS Create 2101.3.1
 - Create 6
@@ -41,7 +41,7 @@ Linux/macOS:
 
 `stable` is the default when `tfmgProfile` is omitted. The CI workflow is configured to compile both profiles against KubeJS builds 368 and 370.
 
-A clean local build and dedicated-server `/reload` passed for all four supported combinations:
+A clean local build and dedicated-server `/reload` on NeoForge 21.1.233 passed for all four supported combinations:
 
 | Profile | KubeJS | Runtime result |
 |---|---|---|
@@ -50,7 +50,7 @@ A clean local build and dedicated-server `/reload` passed for all four supported
 | `stable` | build 370 | 8 positive recipes passed |
 | `current` | build 370 | 9 positive recipes passed; all 8 schemas exported successfully |
 
-The packaged metadata was also inspected after the final source corrections. Client startup, JEI visibility, and actual execution in TFMG machines still require an interactive Minecraft check before publishing a release.
+The packaged metadata was also inspected after the final source corrections. Client startup, JEI visibility, and actual execution in TFMG machines must be repeated interactively on NeoForge 21.1.233 before publishing a release.
 
 ## Project documentation
 

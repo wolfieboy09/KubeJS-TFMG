@@ -75,6 +75,9 @@ jobs:
 
           unzip -p "$JAR_FILE" META-INF/neoforge.mods.toml > generated-neoforge.mods.toml
           ! grep -F '${' generated-neoforge.mods.toml
+          EXPECTED_NEO_RANGE="$(sed -n 's/^neo_version_range=//p' gradle.properties)"
+          test -n "$EXPECTED_NEO_RANGE"
+          grep -Fq "versionRange=\"$EXPECTED_NEO_RANGE\"" generated-neoforge.mods.toml
 
       - name: Upload JARs
         uses: actions/upload-artifact@v4

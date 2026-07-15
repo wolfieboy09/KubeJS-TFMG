@@ -35,11 +35,23 @@ $currentDirectory = Join-Path $repoRoot 'tests\fixtures\kubejs\server_scripts\po
 $negativeDirectory = Join-Path $repoRoot 'tests\fixtures\kubejs\server_scripts\negative'
 $resultsDirectory = Join-Path $runDirectory 'runtime-results'
 $gradleWrapper = Join-Path $repoRoot 'gradlew.bat'
+$gradleProperties = Join-Path $repoRoot 'gradle.properties'
 
-foreach ($requiredPath in @($gradleWrapper, $positiveDirectory, $currentDirectory, $negativeDirectory)) {
+foreach ($requiredPath in @($gradleWrapper, $gradleProperties, $positiveDirectory, $currentDirectory, $negativeDirectory)) {
     if (-not (Test-Path -LiteralPath $requiredPath)) {
         throw "Required runtime-test path does not exist: $requiredPath"
     }
+}
+
+$neoForgeProperty = Get-Content -Encoding UTF8 -LiteralPath $gradleProperties |
+    Where-Object { $_ -match '^neo_version=' } |
+    Select-Object -First 1
+if (-not $neoForgeProperty) {
+    throw "neo_version is missing from $gradleProperties"
+}
+$neoForgeVersion = ($neoForgeProperty -split '=', 2)[1].Trim()
+if (-not $neoForgeVersion) {
+    throw "neo_version is empty in $gradleProperties"
 }
 
 New-Item -ItemType Directory -Force -Path $serverScriptsDirectory | Out-Null
@@ -301,7 +313,7 @@ try {
 
     $stdout = $stdoutTask.GetAwaiter().GetResult()
     $stderr = $stderrTask.GetAwaiter().GetResult()
-    $resultBaseName = "$Profile-$($KubeJSVersion.Replace('.', '_'))"
+    $resultBaseName = "neoforge-$($neoForgeVersion.Replace('.', '_'))-$Profile-$($KubeJSVersion.Replace('.', '_'))"
     [System.IO.File]::WriteAllText((Join-Path $resultsDirectory "$resultBaseName-gradle.log"), $stdout + [Environment]::NewLine + $stderr)
 
     if (Test-Path -LiteralPath $latestLog) {
@@ -310,6 +322,7 @@ try {
 
     $summary = [ordered]@{
         profile = $Profile
+        neoforge = $neoForgeVersion
         kubejs = $KubeJSVersion
         expectedRecipes = $expectedRecipeCount
         explicitReload = $explicitReloadPassed
@@ -327,4 +340,4 @@ if ($failure) {
     throw $failure
 }
 
-Write-Output "RUNTIME_OK profile=$Profile kubejs=$KubeJSVersion recipes=$expectedRecipeCount schemas=$($schemaExportResults.Count) negatives=$($negativeResults.Count)"
+Write-Output "RUNTIME_OK neoforge=$neoForgeVersion profile=$Profile kubejs=$KubeJSVersion recipes=$expectedRecipeCount schemas=$($schemaExportResults.Count) negatives=$($negativeResults.Count)"

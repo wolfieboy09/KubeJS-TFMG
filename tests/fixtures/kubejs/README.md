@@ -53,14 +53,14 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tests\runtime\Invoke-T
 
 Verified server matrix:
 
-| Profile | KubeJS | Positive recipes | Negative fixtures | Explicit reload |
-|---|---|---:|---:|---|
-| `stable` | build 368 | 8 | 11/11 | passed |
-| `current` | build 368 | 9 | not applicable | passed |
-| `stable` | build 370 | 8 | not repeated | passed |
-| `current` | build 370 | 9 | not applicable | passed |
+| NeoForge | Profile | KubeJS | Positive recipes | Negative fixtures | Explicit reload |
+|---|---|---|---:|---:|---|
+| 21.1.233 | `stable` | build 368 | 8 | 11/11 | passed |
+| 21.1.233 | `current` | build 368 | 9 | not applicable | passed |
+| 21.1.233 | `stable` | build 370 | 8 | not repeated | passed |
+| 21.1.233 | `current` | build 370 | 9 | not applicable | passed |
 
-All eight schema exports succeeded on `current` with KubeJS build 370. Client, JEI, and in-machine execution are separate interactive checks and have not yet been completed.
+All eight schema exports succeeded on NeoForge 21.1.233 with `current` and KubeJS build 370. Client, JEI, and in-machine execution are separate interactive checks and must be repeated on NeoForge 21.1.233.
 
 ### Prepare an interactive client
 
