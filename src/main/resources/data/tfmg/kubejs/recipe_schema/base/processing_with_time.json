@@ -1,0 +1,39 @@
+{
+  "parent": "create:base/processing_with_time",
+  "keys": [
+    {
+      "name": "ingredients",
+      "role": "input",
+      "type": {
+        "type": "list",
+        "min": 0,
+        "component": {
+          "type": "either",
+          "left": "ingredient",
+          "right": "create:sized_fluid_ingredient"
+        },
+        "spread": {
+          "type": "either",
+          "left": "sized_ingredient",
+          "right": "ignore"
+        }
+      }
+    },
+    {
+      "name": "results",
+      "role": "output",
+      "type": {
+        "type": "list",
+        "min": 0,
+        "component": {
+          "type": "either",
+          "left": "fluid_stack",
+          "right": "create:processing_output"
+        }
+      }
+    }
+  ],
+  "merge": {
+    "keys": true
+  }
+}

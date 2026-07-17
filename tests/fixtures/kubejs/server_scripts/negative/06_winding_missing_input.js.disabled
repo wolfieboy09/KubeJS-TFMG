@@ -1,0 +1,8 @@
+// Expected: Winding requires exactly two item inputs.
+ServerEvents.recipes(event => {
+  event.recipes.tfmg.winding(
+    ['minecraft:string'],
+    ['minecraft:fishing_rod'],
+    90
+  ).id('kubejs:tfmgjs_negative/winding_missing_input')
+})

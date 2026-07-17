@@ -1,0 +1,8 @@
+// Expected: Hot Blast requires two fluid inputs; an item is not accepted.
+ServerEvents.recipes(event => {
+  event.recipes.tfmg.hot_blast(
+    [Fluid.of('minecraft:water', 500), 'minecraft:ice'],
+    [Fluid.of('minecraft:lava', 500), Fluid.of('minecraft:water', 500)],
+    160
+  ).id('kubejs:tfmgjs_negative/hot_blast_wrong_input_type')
+})

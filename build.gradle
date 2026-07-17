@@ -8,6 +8,51 @@ plugins {
 apply from: "./gradle/java.gradle"
 apply from: "gradle/property_loader.gradle"
 
+def dependencyProfiles = [
+        stable : [
+                createVersion   : '6.0.8-166',
+                flywheelVersion : '1.0.5',
+                registrateVersion: 'MC1.21-1.3.0+62',
+                ponderVersion   : '1.0.64',
+                tfmgVersion     : '1.2.0',
+                tfmgFileId      : '7430073'
+        ],
+        current: [
+                createVersion   : '6.0.10-280',
+                flywheelVersion : '1.0.6',
+                registrateVersion: 'MC1.21-1.3.0+67',
+                ponderVersion   : '1.0.82',
+                tfmgVersion     : '1.2.2',
+                tfmgFileId      : '8205648'
+        ]
+]
+
+def tfmgProfile = providers.gradleProperty('tfmgProfile').getOrElse('stable')
+def dependencyProfile = dependencyProfiles[tfmgProfile]
+
+if (dependencyProfile == null) {
+    throw new GradleException("Unknown TFMG dependency profile '${tfmgProfile}'. Expected 'stable' or 'current'.")
+}
+
+// Library versions can be overridden within the selected profile's artifact layout.
+// TFMG's Curse Maven coordinate is its file ID, so its display version and file ID
+// must always be overridden together.
+def createVersion = providers.gradleProperty('create_version').getOrElse(dependencyProfile.createVersion)
+def flywheelVersion = providers.gradleProperty('flywheel_version').getOrElse(dependencyProfile.flywheelVersion)
+def registrateVersion = providers.gradleProperty('registrate_version').getOrElse(dependencyProfile.registrateVersion)
+def ponderVersion = providers.gradleProperty('ponder_version').getOrElse(dependencyProfile.ponderVersion)
+def tfmgVersionProperty = providers.gradleProperty('tfmg_version')
+def tfmgFileIdProperty = providers.gradleProperty('tfmg_file_id')
+
+if (tfmgVersionProperty.isPresent() != tfmgFileIdProperty.isPresent()) {
+    throw new GradleException('Override both -Ptfmg_version and -Ptfmg_file_id, or neither.')
+}
+
+def tfmgVersion = tfmgVersionProperty.getOrElse(dependencyProfile.tfmgVersion)
+def tfmgFileId = tfmgFileIdProperty.getOrElse(dependencyProfile.tfmgFileId)
+
+logger.lifecycle("TFMG dependency profile: ${tfmgProfile} (TFMG ${tfmgVersion}, Create ${createVersion})")
+
 tasks.named('wrapper', Wrapper).configure {
     distributionType = Wrapper.DistributionType.BIN
 }
@@ -94,6 +139,7 @@ configurations {
 }
 
 repositories {
+    mavenCentral()
     maven {
         url "https://cursemaven.com"
         content {
@@ -101,8 +147,21 @@ repositories {
         }
     }
     maven {
-        name = 'tterrag maven'
-        url = 'https://maven.tterrag.com/'
+        name = 'Create Maven'
+        url = 'https://maven.createmod.net'
+        content {
+            includeGroup "com.simibubi.create"
+            includeGroup "dev.engine-room.flywheel"
+            includeGroup "dev.engine-room.vanillin"
+            includeGroup "net.createmod.ponder"
+        }
+    }
+    maven {
+        name = 'Registrate Snapshots'
+        url = 'https://maven.ithundxr.dev/snapshots'
+        content {
+            includeGroup "com.tterrag.registrate"
+        }
     }
     maven {
         name = "Shedaniel's Maven (Architectury)"
@@ -125,30 +184,34 @@ repositories {
         }
     }
     maven { url = "https://maven.blamejared.com" }
-    maven { url = "https://maven.createmod.net" }
-    maven { url = "https://maven.ithundxr.dev/mirror" }
     maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" }
 }
 
 dependencies {
     implementation 'org.jetbrains:annotations:22.0.0'
 
-    implementation("com.tterrag.registrate:Registrate:${registrate_version}")
+    implementation("com.tterrag.registrate:Registrate:${registrateVersion}")
 
-    implementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
-    compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${minecraft_version}:${flywheel_version}")
-    runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}") {
+    implementation("com.simibubi.create:create-${minecraft_version}:${createVersion}:slim") { transitive = false }
+    compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${minecraft_version}:${flywheelVersion}")
+    runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheelVersion}") {
         version {
             strictly "[1.0,2.0)"
-            prefer flywheel_version
+            prefer flywheelVersion
         }
     }
-    implementation("net.createmod.ponder:Ponder-NeoForge-${minecraft_version}:${ponder_version}")
 
-    implementation("curse.maven:create-industry-693815:7020555")
+    if (tfmgProfile == 'stable') {
+        implementation("net.createmod.ponder:Ponder-NeoForge-${minecraft_version}:${ponderVersion}")
+    } else {
+        implementation("net.createmod.ponder:ponder-neoforge:${ponderVersion}+mc${minecraft_version}")
+    }
+
+    implementation("curse.maven:create-industry-693815:${tfmgFileId}") { transitive = false }
 
     api("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
     interfaceInjectionData("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
+    implementation("dev.latvian.mods:kubejs-create-neoforge:$kubejs_create_version") { transitive = false }
 
     localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}") { transitive = false }
 }
@@ -165,10 +228,11 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             mod_version            : mod_version,
             mod_authors            : mod_authors,
             mod_description        : mod_description,
-            kubejs_version         : kubejs_version,
-            tfmg_version           : tfmg_version,
-            jarVersion             : project.version,
-            create_toml_version    : create_toml_version
+            neo_version_range      : neo_version_range,
+            kubejs_version_range   : kubejs_version_range,
+            kubejs_create_version_range: kubejs_create_version_range,
+            create_version_range   : create_version_range,
+            tfmg_version_range     : tfmg_version_range
     ]
     inputs.properties replaceProperties
     expand replaceProperties
@@ -179,10 +243,12 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
 sourceSets.main.resources.srcDir generateModMetadata
 neoForge.ideSyncTask generateModMetadata
 
+def jarLicenseName = "LICENSE_${mod_id}"
+
 jar {
-    // from('LICENSE') {
-    //     rename { "${it}_${archivesBaseName}" }
-    // }
+    from('LICENSE') {
+        rename { jarLicenseName }
+    }
 }
 
 tasks.named("sourcesJar") {
@@ -210,4 +276,8 @@ publishing {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.compilerArgs = ['-Xdiags:verbose']
+}
+
+tasks.named('runServer', JavaExec).configure {
+    standardInput = System.in
 }

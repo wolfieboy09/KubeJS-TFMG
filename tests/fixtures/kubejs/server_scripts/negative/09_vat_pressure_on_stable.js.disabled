@@ -1,0 +1,9 @@
+// Stable profile only. Expected: TFMG 1.2.0 does not support the pressure field.
+ServerEvents.recipes(event => {
+  event.recipes.tfmg.vat_machine_recipe(
+    [Fluid.of('minecraft:water', 250)],
+    [Fluid.of('minecraft:lava', 250)]
+  )
+    .pressure(1)
+    .id('kubejs:tfmgjs_negative/vat_pressure_on_stable')
+})

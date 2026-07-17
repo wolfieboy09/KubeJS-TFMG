@@ -1,0 +1,16 @@
+// Expected: Distillation accepts at most six fluid outputs.
+ServerEvents.recipes(event => {
+  event.recipes.tfmg.distillation(
+    [Fluid.of('minecraft:water', 1000)],
+    [
+      Fluid.of('minecraft:water', 100),
+      Fluid.of('minecraft:water', 100),
+      Fluid.of('minecraft:water', 100),
+      Fluid.of('minecraft:water', 100),
+      Fluid.of('minecraft:water', 100),
+      Fluid.of('minecraft:water', 100),
+      Fluid.of('minecraft:water', 100)
+    ],
+    120
+  ).id('kubejs:tfmgjs_negative/distillation_too_many_outputs')
+})

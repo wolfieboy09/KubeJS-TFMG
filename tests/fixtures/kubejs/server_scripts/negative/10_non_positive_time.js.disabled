@@ -1,0 +1,8 @@
+// Expected: processing time must be greater than zero, including positional time.
+ServerEvents.recipes(event => {
+  event.recipes.tfmg.casting(
+    [Fluid.of('minecraft:lava', 250)],
+    ['minecraft:stone'],
+    0
+  ).id('kubejs:tfmgjs_negative/non_positive_time')
+})

@@ -1,0 +1,10 @@
+// Expected: Casting does not support a heat requirement.
+ServerEvents.recipes(event => {
+  event.recipes.tfmg.casting(
+    [Fluid.of('minecraft:lava', 250)],
+    ['minecraft:stone'],
+    80
+  )
+    .heated()
+    .id('kubejs:tfmgjs_negative/unsupported_heat')
+})
