@@ -35,5 +35,6 @@
   ],
   "merge": {
     "keys": true
-  }
+  },
+  "unique": ["results"]
 }
