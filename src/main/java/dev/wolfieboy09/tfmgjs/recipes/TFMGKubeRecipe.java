@@ -1,5 +1,6 @@
 package dev.wolfieboy09.tfmgjs.recipes;
 
+import com.drmangotea.tfmg.TFMG;
 import com.mojang.datafixers.util.Either;
 import com.simibubi.create.content.processing.recipe.HeatCondition;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
@@ -9,6 +10,7 @@ import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.RecipeValidationContext;
 import dev.latvian.mods.kubejs.util.TickDuration;
 import dev.latvian.mods.rhino.Context;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -28,7 +30,6 @@ import java.util.regex.Pattern;
  * a missing input or output.</p>
  */
 public final class TFMGKubeRecipe extends KubeRecipe {
-    private static final String TFMG_MOD_ID = "tfmg";
     private static final Pattern VERSION_PARTS = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)");
     private static final List<String> ALL_VAT_TYPES = List.of(
             "tfmg:steel_vat",
@@ -48,6 +49,7 @@ public final class TFMGKubeRecipe extends KubeRecipe {
     );
 
     @Override
+    @HideFromJS
     public void validate(RecipeValidationContext context) {
         validateShape();
         validateSpecialValue("processing_time", get("processing_time"));
@@ -59,6 +61,7 @@ public final class TFMGKubeRecipe extends KubeRecipe {
     }
 
     @Override
+    @HideFromJS
     public <T> TFMGKubeRecipe setValue(RecipeKey<T> key, T value) {
         validateSpecialValue(key.name, value);
 
@@ -82,6 +85,7 @@ public final class TFMGKubeRecipe extends KubeRecipe {
     }
 
     @Override
+    @HideFromJS
     public TFMGKubeRecipe set(Context context, String key, Object value) {
         validateSpecialValue(key, value);
 
@@ -108,6 +112,7 @@ public final class TFMGKubeRecipe extends KubeRecipe {
         return this;
     }
 
+    @SuppressWarnings("unused")
     public TFMGKubeRecipe processingTime(int ticks) {
         if (ticks <= 0) {
             throw recipeError("TFMG processing time must be greater than zero");
@@ -116,6 +121,7 @@ public final class TFMGKubeRecipe extends KubeRecipe {
         return setSchemaValue("processing_time", TickDuration.of(ticks));
     }
 
+    @SuppressWarnings("unused")
     public TFMGKubeRecipe hotAirUsage(int amount) {
         requireType("industrial_blasting", "hotAirUsage");
         if (amount < 0) {
@@ -125,21 +131,25 @@ public final class TFMGKubeRecipe extends KubeRecipe {
         return setSchemaValue("hot_air_usage", amount);
     }
 
+    @SuppressWarnings("unused")
     public TFMGKubeRecipe machines(String... machines) {
         requireVatMethod("machines");
         return setSchemaValue("machines", List.of(machines));
     }
 
+    @SuppressWarnings("unused")
     public TFMGKubeRecipe allowedVatTypes(String... types) {
         requireVatMethod("allowedVatTypes");
         return setSchemaValue("allowed_vat_types", List.of(types));
     }
 
+    @SuppressWarnings("unused")
     public TFMGKubeRecipe allowAllVatTypes() {
         requireVatMethod("allowAllVatTypes");
         return setSchemaValue("allowed_vat_types", ALL_VAT_TYPES);
     }
 
+    @SuppressWarnings("unused")
     public TFMGKubeRecipe minSize(int size) {
         requireVatMethod("minSize");
         if (size <= 0) {
@@ -149,6 +159,7 @@ public final class TFMGKubeRecipe extends KubeRecipe {
         return setSchemaValue("min_size", size);
     }
 
+    @SuppressWarnings("unused")
     public TFMGKubeRecipe heatLevel(int level) {
         requireVatMethod("heatLevel");
         if (level < 0) {
@@ -158,6 +169,7 @@ public final class TFMGKubeRecipe extends KubeRecipe {
         return setSchemaValue("heat_level", level);
     }
 
+    @SuppressWarnings("unused")
     public TFMGKubeRecipe pressure(int pressure) {
         requireVatMethod("pressure");
         if (pressure < 0) {
@@ -170,6 +182,7 @@ public final class TFMGKubeRecipe extends KubeRecipe {
         return setSchemaValue("pressure", pressure);
     }
 
+    @SuppressWarnings("unused")
     private void validateShapeIfReady() {
         if (get("ingredients") != null && get("results") != null) {
             validateShape();
@@ -232,8 +245,8 @@ public final class TFMGKubeRecipe extends KubeRecipe {
 
     private void validateSpecialValue(String key, Object value) {
         if ("processing_time".equals(key)) {
-            var ticks = value instanceof TickDuration duration
-                    ? duration.ticks()
+            var ticks = value instanceof TickDuration(long ticks1)
+                    ? ticks1
                     : value instanceof Number number ? number.longValue() : 1L;
             if (ticks <= 0L) {
                 throw recipeError("TFMG processing time must be greater than zero");
@@ -321,7 +334,7 @@ public final class TFMGKubeRecipe extends KubeRecipe {
             return false;
         }
 
-        var version = modList.getModContainerById(TFMG_MOD_ID)
+        var version = modList.getModContainerById(TFMG.MOD_ID)
                 .map(container -> container.getModInfo().getVersion().toString())
                 .orElse("");
         var matcher = VERSION_PARTS.matcher(version);
