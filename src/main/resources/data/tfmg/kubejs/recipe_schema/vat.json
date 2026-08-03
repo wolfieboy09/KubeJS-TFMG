@@ -1,0 +1,10 @@
+{
+  "parent": "tfmg:vat_machine_recipe",
+  "hidden": false,
+  "merge": {
+    "constructors": true,
+    "keys": true,
+    "unique": true
+  },
+  "override_type": "tfmg:vat_machine_recipe"
+}

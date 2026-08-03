@@ -325,7 +325,9 @@ public final class TFMGKubeRecipe extends KubeRecipe {
     }
 
     private String recipePath() {
-        return type == null ? "unknown" : type.id.getPath();
+        var path = type == null ? "unknown" : type.id.getPath();
+        // "vat" is short for "vat_machine_recipe" and we need to do that here for later in the pipeline
+        return "vat".equals(path) ? "vat_machine_recipe" : path;
     }
 
     private static boolean supportsPressure() {
