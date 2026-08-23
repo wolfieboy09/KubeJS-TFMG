@@ -1,6 +1,5 @@
 package dev.wolfieboy09.tfmgjs.recipes;
 
-import com.drmangotea.tfmg.TFMG;
 import com.mojang.datafixers.util.Either;
 import com.simibubi.create.content.processing.recipe.HeatCondition;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
@@ -12,13 +11,11 @@ import dev.latvian.mods.kubejs.util.TickDuration;
 import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Shared recipe object used by the data-driven TFMG schemas.
@@ -29,8 +26,8 @@ import java.util.regex.Pattern;
  * the limits here lets all eight schemas reject recipes before TFMG machines index
  * a missing input or output.</p>
  */
+@SuppressWarnings("unused")
 public final class TFMGKubeRecipe extends KubeRecipe {
-    private static final Pattern VERSION_PARTS = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)");
     private static final List<String> ALL_VAT_TYPES = List.of(
             "tfmg:steel_vat",
             "tfmg:cast_iron_vat",
@@ -38,14 +35,14 @@ public final class TFMGKubeRecipe extends KubeRecipe {
     );
 
     private static final Map<String, Shape> SHAPES = Map.of(
-            "casting", new Shape(0, 0, 1, 1, 1, 1, 0, 0, false),
-            "coking", new Shape(1, 1, 0, 0, 1, 1, 2, 2, false),
-            "distillation", new Shape(0, 0, 1, 1, 0, 0, 1, 6, false),
-            "industrial_blasting", new Shape(1, 2, 0, 0, 0, 0, 2, 3, false),
-            "polarizing", new Shape(1, 1, 0, 0, 1, 1, 0, 0, false),
-            "winding", new Shape(2, 2, 0, 0, 1, 1, 0, 0, false),
-            "hot_blast", new Shape(0, 0, 2, 2, 0, 0, 2, 2, false),
-            "vat_machine_recipe", new Shape(0, 4, 0, 4, 0, 4, 0, 4, true)
+            "casting", new Shape(0, 0, 1, 1, 1, 1, 0, 0, false, false),
+            "coking", new Shape(1, 1, 0, 0, 1, 1, 2, 2, false, false),
+            "distillation", new Shape(0, 0, 1, 1, 0, 0, 1, 6, false, true),
+            "industrial_blasting", new Shape(1, 2, 0, 0, 0, 0, 2, 3, false, false),
+            "polarizing", new Shape(1, 1, 0, 0, 1, 1, 0, 0, false, false),
+            "winding", new Shape(2, 2, 0, 0, 1, 1, 0, 0, false, false),
+            "hot_blast", new Shape(0, 0, 2, 2, 0, 0, 2, 2, false, false),
+            "vat_machine_recipe", new Shape(0, 4, 0, 4, 0, 4, 0, 4, true, true)
     );
 
     @Override
@@ -55,19 +52,12 @@ public final class TFMGKubeRecipe extends KubeRecipe {
         validateSpecialValue("processing_time", get("processing_time"));
         validateSpecialValue("heat_requirement", get("heat_requirement"));
         validateNumericFields();
-
-        // Schema-generated functions and existing JSON can bypass Java helper methods.
-        validatePressureAvailability();
     }
 
     @Override
     @HideFromJS
     public <T> TFMGKubeRecipe setValue(RecipeKey<T> key, T value) {
         validateSpecialValue(key.name, value);
-
-        if ("pressure".equals(key.name) && !supportsPressure()) {
-            throw pressureVersionError();
-        }
 
         var previous = getValue(key);
         super.setValue(key, value);
@@ -89,10 +79,6 @@ public final class TFMGKubeRecipe extends KubeRecipe {
     public TFMGKubeRecipe set(Context context, String key, Object value) {
         validateSpecialValue(key, value);
 
-        if ("pressure".equals(key) && !supportsPressure()) {
-            throw pressureVersionError();
-        }
-
         var validatesShape = "ingredients".equals(key) || "results".equals(key);
         var previous = validatesShape ? get(key) : null;
 
@@ -103,16 +89,13 @@ public final class TFMGKubeRecipe extends KubeRecipe {
                 validateShapeIfReady();
             }
         } catch (RuntimeException exception) {
-            if (validatesShape) {
-                setSchemaValue(key, previous);
-            }
+            setSchemaValue(key, previous);
             throw exception;
         }
 
         return this;
     }
 
-    @SuppressWarnings("unused")
     public TFMGKubeRecipe processingTime(int ticks) {
         if (ticks <= 0) {
             throw recipeError("TFMG processing time must be greater than zero");
@@ -121,7 +104,6 @@ public final class TFMGKubeRecipe extends KubeRecipe {
         return setSchemaValue("processing_time", TickDuration.of(ticks));
     }
 
-    @SuppressWarnings("unused")
     public TFMGKubeRecipe hotAirUsage(int amount) {
         requireType("industrial_blasting", "hotAirUsage");
         if (amount < 0) {
@@ -131,25 +113,21 @@ public final class TFMGKubeRecipe extends KubeRecipe {
         return setSchemaValue("hot_air_usage", amount);
     }
 
-    @SuppressWarnings("unused")
     public TFMGKubeRecipe machines(String... machines) {
         requireVatMethod("machines");
         return setSchemaValue("machines", List.of(machines));
     }
 
-    @SuppressWarnings("unused")
     public TFMGKubeRecipe allowedVatTypes(String... types) {
         requireVatMethod("allowedVatTypes");
         return setSchemaValue("allowed_vat_types", List.of(types));
     }
 
-    @SuppressWarnings("unused")
     public TFMGKubeRecipe allowAllVatTypes() {
         requireVatMethod("allowAllVatTypes");
         return setSchemaValue("allowed_vat_types", ALL_VAT_TYPES);
     }
 
-    @SuppressWarnings("unused")
     public TFMGKubeRecipe minSize(int size) {
         requireVatMethod("minSize");
         if (size <= 0) {
@@ -159,7 +137,6 @@ public final class TFMGKubeRecipe extends KubeRecipe {
         return setSchemaValue("min_size", size);
     }
 
-    @SuppressWarnings("unused")
     public TFMGKubeRecipe heatLevel(int level) {
         requireVatMethod("heatLevel");
         if (level < 0) {
@@ -169,20 +146,16 @@ public final class TFMGKubeRecipe extends KubeRecipe {
         return setSchemaValue("heat_level", level);
     }
 
-    @SuppressWarnings("unused")
     public TFMGKubeRecipe pressure(int pressure) {
         requireVatMethod("pressure");
-        if (pressure < 0) {
-            throw recipeError("TFMG vat pressure cannot be negative");
-        }
-        if (!supportsPressure()) {
-            throw pressureVersionError();
+        // 1.2.4a uses [-9,9]
+        if (pressure < -9) {
+            throw recipeError("TFMG vat pressure cannot be less than -9");
         }
 
         return setSchemaValue("pressure", pressure);
     }
 
-    @SuppressWarnings("unused")
     private void validateShapeIfReady() {
         if (get("ingredients") != null && get("results") != null) {
             validateShape();
@@ -261,8 +234,8 @@ public final class TFMGKubeRecipe extends KubeRecipe {
     }
 
     private boolean supportsHeat() {
-        var path = recipePath();
-        return "distillation".equals(path) || "vat_machine_recipe".equals(path);
+        var shape = SHAPES.get(recipePath());
+        return shape != null && shape.supportsHeat();
     }
 
     private void validateNumericFields() {
@@ -273,26 +246,13 @@ public final class TFMGKubeRecipe extends KubeRecipe {
         if (isVatRecipe()) {
             requireNonNegative("min_size", "TFMG vat minimum size cannot be negative");
             requireNonNegative("heat_level", "TFMG vat heat level cannot be negative");
-            requireNonNegative("pressure", "TFMG vat pressure cannot be negative");
+            //requireNonNegative("pressure", "TFMG vat pressure cannot be negative");
         }
     }
 
     private void requireNonNegative(String key, String message) {
         if (get(key) instanceof Number number && number.longValue() < 0L) {
             throw recipeError(message);
-        }
-    }
-
-    private void validatePressureAvailability() {
-        if (!isVatRecipe() || supportsPressure()) {
-            return;
-        }
-
-        var pressure = get("pressure");
-        var typedPressureWasSet = pressure instanceof Number number && number.longValue() != 0L;
-        var jsonPressureWasSet = json != null && json.has("pressure");
-        if (typedPressureWasSet || jsonPressureWasSet) {
-            throw pressureVersionError();
         }
     }
 
@@ -330,30 +290,6 @@ public final class TFMGKubeRecipe extends KubeRecipe {
         return "vat".equals(path) ? "vat_machine_recipe" : path;
     }
 
-    private static boolean supportsPressure() {
-        var modList = ModList.get();
-        if (modList == null) {
-            return false;
-        }
-
-        var version = modList.getModContainerById(TFMG.MOD_ID)
-                .map(container -> container.getModInfo().getVersion().toString())
-                .orElse("");
-        var matcher = VERSION_PARTS.matcher(version);
-        if (!matcher.find()) {
-            return false;
-        }
-
-        var major = Integer.parseInt(matcher.group(1));
-        var minor = Integer.parseInt(matcher.group(2));
-        var patch = Integer.parseInt(matcher.group(3));
-        return major > 1 || major == 1 && (minor > 2 || minor == 2 && patch >= 2);
-    }
-
-    private KubeRuntimeException pressureVersionError() {
-        return recipeError("TFMG vat pressure requires TFMG 1.2.2 or newer");
-    }
-
     private record Counts(int items, int fluids) {
     }
 
@@ -366,7 +302,8 @@ public final class TFMGKubeRecipe extends KubeRecipe {
             int maxItemOutputs,
             int minFluidOutputs,
             int maxFluidOutputs,
-            boolean requireAnyInputAndOutput
+            boolean requireAnyInputAndOutput,
+            boolean supportsHeat
     ) {
         private void validate(String type, Counts inputs, Counts outputs) {
             check(type, "item inputs", inputs.items, minItemInputs, maxItemInputs);
