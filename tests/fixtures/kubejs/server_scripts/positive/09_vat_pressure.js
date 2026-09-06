@@ -1,4 +1,3 @@
-// TFMG 1.2.2+ only. Do not load this fixture with the stable profile.
 ServerEvents.recipes(event => {
   event.recipes.tfmg.vat_machine_recipe(
     [Fluid.of('minecraft:water', 250)],

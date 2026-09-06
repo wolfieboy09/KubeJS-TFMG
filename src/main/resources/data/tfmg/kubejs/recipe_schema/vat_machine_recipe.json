@@ -6,7 +6,7 @@
       "name": "machines",
       "type": {
         "type": "list",
-        "component": "string",
+        "component": "tfmg:vat_operation",
         "min": 0
       },
       "optional": [],
