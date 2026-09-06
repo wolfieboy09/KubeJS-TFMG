@@ -141,6 +141,12 @@ repositories {
     maven { url = "https://maven.blamejared.com" }
     maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" }
     maven { url = "https://api.modrinth.com/maven" }
+
+    maven {
+        name "Krystals Maven"
+        url "https://krystalsmaven.oreostack.uk/snapshots"
+    }
+    maven { url = "https://maven.ryanhcode.dev/releases" }
 }
 
 dependencies {
@@ -159,8 +165,7 @@ dependencies {
 
     implementation("net.createmod.ponder:ponder-neoforge:${ponderVersion}+mc${minecraft_version}")
 
-    //implementation("maven.modrinth:tfmg-community-edition:${tfmg_version}") { transitive = false }
-    implementation("curse.maven:tfmg-community-edition-1653026:8706260")
+    implementation("com.drmangotea:tfmg:${minecraft_version}-${tfmg_version}") { transitive = false }
 
     api("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
     interfaceInjectionData("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
@@ -185,6 +190,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             kubejs_version_range   : "[$kubejs_version,)",
             kubejs_create_version_range: "[$kubejs_create_version,)",
             create_version_range   : create_version_range,
+            tfmg_version           : tfmg_version,
             tfmg_version_range     : "[$tfmg_version,)"
     ]
     inputs.properties replaceProperties
