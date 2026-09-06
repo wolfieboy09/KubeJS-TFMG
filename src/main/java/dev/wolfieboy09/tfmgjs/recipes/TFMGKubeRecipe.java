@@ -1,5 +1,7 @@
 package dev.wolfieboy09.tfmgjs.recipes;
 
+import com.drmangotea.tfmg.TFMG;
+import com.drmangotea.tfmg.content.machinery.vat.base.registry.operations.VatOperation;
 import com.mojang.datafixers.util.Either;
 import com.simibubi.create.content.processing.recipe.HeatCondition;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
@@ -10,6 +12,7 @@ import dev.latvian.mods.kubejs.recipe.component.RecipeValidationContext;
 import dev.latvian.mods.kubejs.util.TickDuration;
 import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
@@ -28,10 +31,10 @@ import java.util.Map;
  */
 @SuppressWarnings("unused")
 public final class TFMGKubeRecipe extends KubeRecipe {
-    private static final List<String> ALL_VAT_TYPES = List.of(
-            "tfmg:steel_vat",
-            "tfmg:cast_iron_vat",
-            "tfmg:firebrick_lined_vat"
+    private static final List<ResourceLocation> ALL_VAT_TYPES = List.of(
+            TFMG.asResource("steel_vat"),
+            TFMG.asResource("cast_iron_vat"),
+            TFMG.asResource("firebrick_lined_vat")
     );
 
     private static final Map<String, Shape> SHAPES = Map.of(
@@ -113,12 +116,12 @@ public final class TFMGKubeRecipe extends KubeRecipe {
         return setSchemaValue("hot_air_usage", amount);
     }
 
-    public TFMGKubeRecipe machines(String... machines) {
+    public TFMGKubeRecipe machines(VatOperation... machines) {
         requireVatMethod("machines");
         return setSchemaValue("machines", List.of(machines));
     }
 
-    public TFMGKubeRecipe allowedVatTypes(String... types) {
+    public TFMGKubeRecipe allowedVatTypes(ResourceLocation... types) {
         requireVatMethod("allowedVatTypes");
         return setSchemaValue("allowed_vat_types", List.of(types));
     }
@@ -148,11 +151,6 @@ public final class TFMGKubeRecipe extends KubeRecipe {
 
     public TFMGKubeRecipe pressure(int pressure) {
         requireVatMethod("pressure");
-        // 1.2.4a uses [-9,9]
-        if (pressure < -9) {
-            throw recipeError("TFMG vat pressure cannot be less than -9");
-        }
-
         return setSchemaValue("pressure", pressure);
     }
 
@@ -246,7 +244,6 @@ public final class TFMGKubeRecipe extends KubeRecipe {
         if (isVatRecipe()) {
             requireNonNegative("min_size", "TFMG vat minimum size cannot be negative");
             requireNonNegative("heat_level", "TFMG vat heat level cannot be negative");
-            //requireNonNegative("pressure", "TFMG vat pressure cannot be negative");
         }
     }
 
