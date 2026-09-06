@@ -151,7 +151,7 @@ repositories {
 
 dependencies {
     // Temporary thing until maven releases snapshots
-    implementation(files("lib/tfmg-1.21.1-1.2.5-community-build.170.jar"))
+    implementation(files("temp/tfmg-1.21.1-1.2.5-community-build.171.jar"))
 
     implementation 'org.jetbrains:annotations:22.0.0'
 
