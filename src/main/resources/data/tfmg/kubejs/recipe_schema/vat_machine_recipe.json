@@ -16,7 +16,7 @@
       "name": "allowed_vat_types",
       "type": {
         "type": "list",
-        "component": "string"
+        "component": "id"
       },
       "optional": [
         "tfmg:steel_vat",
