@@ -243,7 +243,6 @@ public final class TFMGKubeRecipe extends KubeRecipe {
 
         if (isVatRecipe()) {
             requireNonNegative("min_size", "TFMG vat minimum size cannot be negative");
-            requireNonNegative("heat_level", "TFMG vat heat level cannot be negative");
         }
     }
 
