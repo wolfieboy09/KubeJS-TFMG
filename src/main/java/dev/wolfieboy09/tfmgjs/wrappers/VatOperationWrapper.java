@@ -3,6 +3,8 @@ package dev.wolfieboy09.tfmgjs.wrappers;
 import com.drmangotea.tfmg.TFMGRegistries;
 import com.drmangotea.tfmg.content.machinery.vat.base.registry.operations.VatOperation;
 import com.drmangotea.tfmg.registry.TFMGVatOperations;
+import dev.latvian.mods.kubejs.error.KubeRuntimeException;
+import dev.latvian.mods.kubejs.script.SourceLine;
 import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.type.TypeInfo;
 import net.minecraft.resources.ResourceLocation;
@@ -15,10 +17,16 @@ public interface VatOperationWrapper {
     }
 
     static VatOperation wrapVatOperation(Context cx, Object from) {
-        // Maybe null and default be something else?
         return switch (from) {
+            case null -> TFMGVatOperations.NONE.get();
+            case VatOperation id -> id;
             case ResourceLocation id -> TFMGRegistries.VAT_OPERATION_REGISTRY.get(id);
-            case null, default -> TFMGVatOperations.NONE.get();
+            case String id -> {
+                ResourceLocation rl = ResourceLocation.tryParse(id);
+                VatOperation op = rl != null ? TFMGRegistries.VAT_OPERATION_REGISTRY.get(rl) : null;
+                yield op != null ? op : TFMGVatOperations.NONE.get();
+            }
+            default -> throw new KubeRuntimeException("Failed to read vat operation %s".formatted(from)).source(SourceLine.of(cx));
         };
     }
 }

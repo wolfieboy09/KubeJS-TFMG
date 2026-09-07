@@ -18,7 +18,6 @@ ServerEvents.recipes(event => {
     .processingTime(140)
     .heated()
     .machines('tfmg:electrode', 'tfmg:electrode')
-    .allowAllVatTypes()
     .minSize(3)
     .heatLevel(1)
     .id('kubejs:tfmgjs_fixture/vat_machine_recipe')

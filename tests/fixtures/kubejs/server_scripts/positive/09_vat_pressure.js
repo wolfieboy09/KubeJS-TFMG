@@ -5,7 +5,7 @@ ServerEvents.recipes(event => {
   )
     .processingTime(100)
     .machines('tfmg:centrifuge')
-    .allowedVatTypes('tfmg:steel_vat')
+    .allowedVatTypes('tfmg:steel')
     .minSize(1)
     .heatLevel(0)
     .pressure(1)

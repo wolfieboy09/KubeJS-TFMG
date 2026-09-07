@@ -36,16 +36,6 @@ public record VatOperationComponent(RecipeComponentType<?> type, Codec<VatOperat
     }
 
     @Override
-    public String toString() {
-        return type.toString();
-    }
-
-    @Override
-    public String toString(OpsContainer ops, VatOperation value) {
-        return value.id().getPath();
-    }
-
-    @Override
     public TypeInfo typeInfo() {
         return VatOperationWrapper.TYPE_INFO;
     }
