@@ -1,7 +1,7 @@
 package dev.wolfieboy09.tfmgjs.recipes;
 
-import com.drmangotea.tfmg.TFMG;
 import com.drmangotea.tfmg.content.machinery.vat.base.registry.operations.VatOperation;
+import com.drmangotea.tfmg.content.machinery.vat.base.registry.types.VatType;
 import com.mojang.datafixers.util.Either;
 import com.simibubi.create.content.processing.recipe.HeatCondition;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
@@ -12,7 +12,6 @@ import dev.latvian.mods.kubejs.recipe.component.RecipeValidationContext;
 import dev.latvian.mods.kubejs.util.TickDuration;
 import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.util.HideFromJS;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
@@ -31,12 +30,6 @@ import java.util.Map;
  */
 @SuppressWarnings("unused")
 public final class TFMGKubeRecipe extends KubeRecipe {
-    private static final List<ResourceLocation> ALL_VAT_TYPES = List.of(
-            TFMG.asResource("steel_vat"),
-            TFMG.asResource("cast_iron_vat"),
-            TFMG.asResource("firebrick_lined_vat")
-    );
-
     private static final Map<String, Shape> SHAPES = Map.of(
             "casting", new Shape(0, 0, 1, 1, 1, 1, 0, 0, false, false),
             "coking", new Shape(1, 1, 0, 0, 1, 1, 2, 2, false, false),
@@ -121,14 +114,9 @@ public final class TFMGKubeRecipe extends KubeRecipe {
         return setSchemaValue("machines", List.of(machines));
     }
 
-    public TFMGKubeRecipe allowedVatTypes(ResourceLocation... types) {
+    public TFMGKubeRecipe allowedVatTypes(VatType... types) {
         requireVatMethod("allowedVatTypes");
         return setSchemaValue("allowed_vat_types", List.of(types));
-    }
-
-    public TFMGKubeRecipe allowAllVatTypes() {
-        requireVatMethod("allowAllVatTypes");
-        return setSchemaValue("allowed_vat_types", ALL_VAT_TYPES);
     }
 
     public TFMGKubeRecipe minSize(int size) {
