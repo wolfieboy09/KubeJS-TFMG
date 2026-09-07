@@ -150,9 +150,6 @@ repositories {
 }
 
 dependencies {
-    // Temporary thing until maven releases snapshots
-    implementation(files("temp/tfmg-1.21.1-1.2.5-community-build.171.jar"))
-
     implementation 'org.jetbrains:annotations:22.0.0'
 
     implementation("com.tterrag.registrate:Registrate:${registrateVersion}")
@@ -168,7 +165,7 @@ dependencies {
 
     implementation("net.createmod.ponder:ponder-neoforge:${ponderVersion}+mc${minecraft_version}")
 
-    //implementation("com.drmangotea:tfmg:${minecraft_version}-${tfmg_version}") { transitive = false }
+    implementation("com.drmangotea:tfmg:${minecraft_version}-${tfmg_version}") { transitive = false }
 
 
     api("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
