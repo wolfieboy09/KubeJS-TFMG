@@ -24,7 +24,10 @@ public interface VatOperationWrapper {
             case String id -> {
                 ResourceLocation rl = ResourceLocation.tryParse(id);
                 VatOperation op = rl != null ? TFMGRegistries.VAT_OPERATION_REGISTRY.get(rl) : null;
-                yield op != null ? op : TFMGVatOperations.NONE.get();
+                if (op == null) {
+                    throw new KubeRuntimeException("Unknown vat operation %s".formatted(id));
+                }
+                yield op;
             }
             default -> throw new KubeRuntimeException("Failed to read vat operation %s".formatted(from)).source(SourceLine.of(cx));
         };
