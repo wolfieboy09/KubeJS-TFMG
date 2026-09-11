@@ -7,7 +7,11 @@ import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.script.SourceLine;
 import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.type.TypeInfo;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.resources.ResourceLocation;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public interface VatOperationWrapper {
     TypeInfo TYPE_INFO = TypeInfo.of(VatOperation.class);
@@ -16,19 +20,39 @@ public interface VatOperationWrapper {
         return from instanceof VatOperation;
     }
 
-    static VatOperation wrapVatOperation(Context cx, Object from) {
+    static VatOperationSpread wrapVatOperation(Context cx, Object from) {
         return switch (from) {
-            case null -> TFMGVatOperations.NONE.get();
-            case VatOperation id -> id;
-            case ResourceLocation id -> TFMGRegistries.VAT_OPERATION_REGISTRY.get(id);
+            case null -> VatOperationSpread.of(TFMGVatOperations.NONE.get());
+            case VatOperation id -> VatOperationSpread.of(id);
+            case VatOperationSpread spread -> spread;
+            case ResourceLocation id -> VatOperationSpread.of(TFMGRegistries.VAT_OPERATION_REGISTRY.get(id));
             case String id -> {
-                ResourceLocation rl = ResourceLocation.tryParse(id);
-                VatOperation op = rl != null ? TFMGRegistries.VAT_OPERATION_REGISTRY.get(rl) : null;
-                if (op == null) {
-                    throw new KubeRuntimeException("Unknown vat operation %s".formatted(id));
+                // I'm sure there's a better way to do all this
+                // But it works, so yay
+
+                Matcher matcher = Pattern.compile("^(?:(\\d+)x\\s*)?(.+)$").matcher(id.trim());
+
+                if (!matcher.matches()) {
+                    throw new KubeRuntimeException("Unknown vat operation %s".formatted(id)).source(SourceLine.of(cx));
                 }
-                yield op;
+
+                int amount = matcher.group(1) != null ? Integer.parseInt(matcher.group(1)) : 1;
+
+                ResourceLocation rl = ResourceLocation.tryParse(matcher.group(2));
+
+                if (rl == null) {
+                    throw new KubeRuntimeException("Unknown vat operation %s".formatted(id)).source(SourceLine.of(cx));
+                }
+
+                VatOperation op = TFMGRegistries.VAT_OPERATION_REGISTRY.get(rl);
+
+                if (op == null) {
+                    throw new KubeRuntimeException("Unknown vat operation %s".formatted(id)).source(SourceLine.of(cx));
+                }
+
+                yield VatOperationSpread.of(op, amount);
             }
+
             default -> throw new KubeRuntimeException("Failed to read vat operation %s".formatted(from)).source(SourceLine.of(cx));
         };
     }

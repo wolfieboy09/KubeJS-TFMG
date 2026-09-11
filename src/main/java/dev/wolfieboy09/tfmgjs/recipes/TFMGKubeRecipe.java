@@ -12,10 +12,12 @@ import dev.latvian.mods.kubejs.recipe.component.RecipeValidationContext;
 import dev.latvian.mods.kubejs.util.TickDuration;
 import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import dev.wolfieboy09.tfmgjs.wrappers.VatOperationSpread;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -109,9 +111,15 @@ public final class TFMGKubeRecipe extends KubeRecipe {
         return setSchemaValue("hot_air_usage", amount);
     }
 
-    public TFMGKubeRecipe machines(VatOperation... machines) {
+    public TFMGKubeRecipe machines(VatOperationSpread... machines) {
         requireVatMethod("machines");
-        return setSchemaValue("machines", List.of(machines));
+        List<VatOperation> vatOps = new ArrayList<>();
+        for (VatOperationSpread machine : machines) {
+            for (int i = 0; i < machine.amount(); i++) {
+                vatOps.add(machine.operation());
+            }
+        }
+        return setSchemaValue("machines", vatOps);
     }
 
     public TFMGKubeRecipe allowedVatTypes(VatType... types) {

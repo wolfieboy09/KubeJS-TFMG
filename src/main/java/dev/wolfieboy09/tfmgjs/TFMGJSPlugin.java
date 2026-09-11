@@ -10,6 +10,7 @@ import dev.wolfieboy09.tfmgjs.component.MixerModeComponent;
 import dev.wolfieboy09.tfmgjs.component.VatOperationComponent;
 import dev.wolfieboy09.tfmgjs.component.VatTypeComponent;
 import dev.wolfieboy09.tfmgjs.recipes.TFMGKubeRecipe;
+import dev.wolfieboy09.tfmgjs.wrappers.VatOperationSpread;
 import dev.wolfieboy09.tfmgjs.wrappers.VatOperationWrapper;
 import dev.wolfieboy09.tfmgjs.wrappers.VatTypeWrapper;
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +33,7 @@ public class TFMGJSPlugin implements KubeJSPlugin {
 
     @Override
     public void registerTypeWrappers(TypeWrapperRegistry registry) {
-        registry.register(VatOperation.class, VatOperationWrapper::wrapVatOperation);
+        registry.register(VatOperationSpread.class, VatOperationWrapper::wrapVatOperation);
         registry.register(VatType.class, VatTypeWrapper::wrapVatType);
     }
 }
