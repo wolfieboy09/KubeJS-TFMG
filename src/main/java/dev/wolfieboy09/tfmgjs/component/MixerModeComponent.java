@@ -51,14 +51,14 @@ public record MixerModeComponent(RecipeComponentType<?> type, Codec<MixerMode> c
     }
 
     static MixerMode none() {
-        return TFMGMixerModes.none.get();
+        return TFMGMixerModes.NONE.get();
     }
 
     static MixerMode mixing() {
-        return TFMGMixerModes.mixing.get();
+        return TFMGMixerModes.MIXING.get();
     }
 
     static MixerMode centrifuge() {
-        return TFMGMixerModes.centrifuge.get();
+        return TFMGMixerModes.CENTRIFUGE.get();
     }
 }
