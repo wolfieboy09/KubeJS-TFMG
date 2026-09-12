@@ -7,6 +7,7 @@ import dev.latvian.mods.rhino.util.ReturnsSelf;
 import dev.wolfieboy09.tfmgjs.TFMGJS;
 import dev.wolfieboy09.tfmgjs.registries.PendingEntries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Consumer;
@@ -21,9 +22,9 @@ public class KubeMixerModeBuilder extends BuilderBase<MixerMode> {
         this.properties = new PropertyWrapper(id);
     }
 
-    public KubeMixerModeBuilder accepts(ResourceLocation... items) {
-        for (ResourceLocation itemId : items) {
-            PendingEntries.addMixerMode(itemId, this.id);
+    public KubeMixerModeBuilder accepts(Item... items) {
+        for (Item item : items) {
+            PendingEntries.addMixerMode(item.kjs$getIdLocation(), this.id);
         }
         return this;
     }
