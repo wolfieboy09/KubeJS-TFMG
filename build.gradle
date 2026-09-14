@@ -142,10 +142,8 @@ repositories {
     maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" }
     maven { url = "https://api.modrinth.com/maven" }
 
-    maven {
-        name "Krystals Maven"
-        url "https://krystalsmaven.oreostack.uk/snapshots"
-    }
+    maven { url "https://krystalsmaven.oreostack.uk/releases" }
+    maven { url "https://krystalsmaven.oreostack.uk/snapshots" }
     maven { url = "https://maven.ryanhcode.dev/releases" }
 }
 
