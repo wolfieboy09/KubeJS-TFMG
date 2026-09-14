@@ -3,8 +3,8 @@ package dev.wolfieboy09.tfmgjs.registries;
 import com.drmangotea.tfmg.TFMGRegistries;
 import com.drmangotea.tfmg.content.machinery.vat.industrial_mixer.mode.MixerMode;
 import com.drmangotea.tfmg.registry.TFMGDataComponents;
+import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
-import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -31,14 +31,12 @@ public class PendingEntries {
         MIXER_MODE.forEach((itemId, modeId) -> {
             Optional<Item> item = BuiltInRegistries.ITEM.getOptional(itemId);
             if (item.isEmpty()) {
-                ConsoleJS.STARTUP.error("Could not resolve item %s for mixer mode %s".formatted(itemId, modeId));
-                return;
+                throw new KubeRuntimeException("Could not resolve item %s for mixer mode %s".formatted(itemId, modeId));
             }
 
             Holder<MixerMode> holder = resolveMixerMode(modeId);
             if (holder == null) {
-                ConsoleJS.STARTUP.error("Could not resolve Mixer Mode %s for item %s".formatted(modeId, itemId));
-                return;
+                throw new KubeRuntimeException("Could not resolve Mixer Mode %s for item %s".formatted(modeId, itemId));
             }
 
             event.modify(item.get(), builder ->
