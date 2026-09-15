@@ -65,9 +65,10 @@ public class PendingEntries {
 
             event.modify(item.get(), builder -> builder.set(TFMGDataComponents.ELECTRODE, new Electrode.Stored(holder)));
         });
+
+        clear();
     }
 
-    @Nullable
     private static Holder<MixerMode> resolveMixerMode(ResourceLocation id) {
         return TFMGRegistries.MIXER_MODE_REGISTRY
                 .getHolder(ResourceKey.create(TFMGRegistries.MIXER_MODE, id))
@@ -78,5 +79,10 @@ public class PendingEntries {
         return TFMGRegistries.ELECTRODE_REGISTRY
                 .getHolder(ResourceKey.create(TFMGRegistries.ELECTRODE, id))
                 .orElse(null);
+    }
+
+    private static void clear() {
+        MIXER_MODE.clear();
+        ELECTRODE_ITEM.clear();
     }
 }
