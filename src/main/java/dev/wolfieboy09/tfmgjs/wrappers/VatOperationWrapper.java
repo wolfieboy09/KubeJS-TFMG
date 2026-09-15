@@ -19,7 +19,12 @@ public interface VatOperationWrapper {
         return from instanceof VatOperation;
     }
 
-    static VatOperationSpread wrapVatOperation(Context cx, Object from) {
+    // I mean it works
+    static VatOperation wrapVatOperation(Context cx, Object from) {
+        return wrapVatOperationSpread(cx, from).operation();
+    }
+
+    static VatOperationSpread wrapVatOperationSpread(Context cx, Object from) {
         return switch (from) {
             case null -> VatOperationSpread.of(TFMGVatOperations.NONE.get());
             case VatOperation id -> VatOperationSpread.of(id);
