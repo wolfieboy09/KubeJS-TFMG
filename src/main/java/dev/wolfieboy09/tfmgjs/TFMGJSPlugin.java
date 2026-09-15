@@ -3,6 +3,7 @@ package dev.wolfieboy09.tfmgjs;
 import com.drmangotea.tfmg.TFMGRegistries;
 import com.drmangotea.tfmg.content.machinery.vat.base.registry.operations.VatOperation;
 import com.drmangotea.tfmg.content.machinery.vat.base.registry.types.VatType;
+import com.drmangotea.tfmg.content.machinery.vat.electrode_holder.electrode.Electrode;
 import com.drmangotea.tfmg.content.machinery.vat.industrial_mixer.IndustrialMixerModels;
 import com.drmangotea.tfmg.content.machinery.vat.industrial_mixer.mode.MixerMode;
 import com.drmangotea.tfmg.registry.TFMGPartialModels;
@@ -19,6 +20,7 @@ import dev.wolfieboy09.tfmgjs.component.VatOperationComponent;
 import dev.wolfieboy09.tfmgjs.component.VatTypeComponent;
 import dev.wolfieboy09.tfmgjs.recipes.TFMGKubeRecipe;
 import dev.wolfieboy09.tfmgjs.registries.PendingEntries;
+import dev.wolfieboy09.tfmgjs.registries.electrode.KubeElectrodeModeBuilder;
 import dev.wolfieboy09.tfmgjs.registries.mixer.KubeMixerModeBuilder;
 import dev.wolfieboy09.tfmgjs.registries.vatops.KubeVatOperationBuilder;
 import dev.wolfieboy09.tfmgjs.wrappers.VatOperationSpread;
@@ -47,7 +49,7 @@ public class TFMGJSPlugin implements KubeJSPlugin {
 
     @Override
     public void registerTypeWrappers(TypeWrapperRegistry registry) {
-        registry.register(VatOperationSpread.class, VatOperationWrapper::wrapVatOperation);
+        registry.register(VatOperationSpread.class, VatOperationWrapper::wrapVatOperationSpread);
         registry.register(VatType.class, VatTypeWrapper::wrapVatType);
     }
 
@@ -61,12 +63,14 @@ public class TFMGJSPlugin implements KubeJSPlugin {
     public void registerBuilderTypes(BuilderTypeRegistry registry) {
         registry.of(TFMGRegistries.VAT_OPERATION, reg -> reg.addDefault(KubeVatOperationBuilder.class, KubeVatOperationBuilder::new));
         registry.of(TFMGRegistries.MIXER_MODE, reg -> reg.addDefault(KubeMixerModeBuilder.class, KubeMixerModeBuilder::new));
+        registry.of(TFMGRegistries.ELECTRODE, reg -> reg.addDefault(KubeElectrodeModeBuilder.class, KubeElectrodeModeBuilder::new));
     }
 
     @Override
     public void registerServerRegistries(ServerRegistryRegistry registry) {
         registry.register(TFMGRegistries.VAT_OPERATION, VatOperation.CODEC, VatOperation.class);
         registry.register(TFMGRegistries.MIXER_MODE, TFMGRegistries.MIXER_MODE_REGISTRY.byNameCodec(), MixerMode.class);
+        registry.register(TFMGRegistries.ELECTRODE, TFMGRegistries.ELECTRODE_REGISTRY.byNameCodec(), Electrode.class);
     }
 
     @Override
