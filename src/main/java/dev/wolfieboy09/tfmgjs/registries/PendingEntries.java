@@ -15,12 +15,13 @@ import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public class PendingEntries {
-    private static final Map<ResourceLocation, ResourceLocation> MIXER_MODE = new HashMap<>();
-    private static final Map<ResourceLocation, ResourceLocation> ELECTRODE_ITEM = new HashMap<>();
+    private static final Map<ResourceLocation, ResourceLocation> MIXER_MODE = new LinkedHashMap<>();
+    private static final Map<ResourceLocation, ResourceLocation> ELECTRODE_ITEM = new LinkedHashMap<>();
 
     public static void addMixerMode(ResourceLocation itemId, ResourceLocation modeId) {
         ResourceLocation previous = MIXER_MODE.put(itemId, modeId);
