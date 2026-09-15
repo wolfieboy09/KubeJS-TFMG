@@ -4,8 +4,11 @@ import com.drmangotea.tfmg.content.machinery.vat.base.registry.operations.VatOpe
 import com.drmangotea.tfmg.content.machinery.vat.industrial_mixer.mode.MixerMode;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.rhino.util.ReturnsSelf;
+import dev.wolfieboy09.tfmgjs.KubeRegistrate;
 import dev.wolfieboy09.tfmgjs.TFMGJS;
 import dev.wolfieboy09.tfmgjs.registries.PendingEntries;
+import dev.wolfieboy09.tfmgjs.wrappers.VatOperationSpread;
+import dev.wolfieboy09.tfmgjs.wrappers.VatOperationWrapper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
@@ -46,8 +49,8 @@ public class KubeMixerModeBuilder extends BuilderBase<MixerMode> {
         }
 
         // This is just waiting to explode at some point
-        public MixerMode.Properties operation(String name) {
-            return operation(TFMGJS.REGISTRATE.vatOperation(name, VatOperation::new).register());
+        public MixerMode.Properties operation(VatOperation operation) {
+            return operation(TFMGJS.REGISTRATE.vatOperation(operation, VatOperation::new).register());
         }
     }
 }
