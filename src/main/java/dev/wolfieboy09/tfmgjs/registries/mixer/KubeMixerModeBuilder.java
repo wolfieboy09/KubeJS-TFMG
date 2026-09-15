@@ -25,6 +25,7 @@ public class KubeMixerModeBuilder extends BuilderBase<MixerMode> {
         this.properties = new PropertyWrapper(id);
     }
 
+    @ReturnsSelf
     public KubeMixerModeBuilder accepts(Item... items) {
         for (Item item : items) {
             PendingEntries.addMixerMode(item.kjs$getIdLocation(), this.id);
