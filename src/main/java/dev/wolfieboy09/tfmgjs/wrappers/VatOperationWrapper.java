@@ -54,7 +54,6 @@ public interface VatOperationWrapper {
 
     static VatOperationSpread wrapVatOperationSpread(Context cx, Object from) {
         return switch (from) {
-            case null -> VatOperationSpread.of(TFMGVatOperations.NONE.get());
             case VatOperation id -> VatOperationSpread.of(id);
             case VatOperationSpread spread -> spread;
             case ResourceLocation id -> VatOperationSpread.of(TFMGRegistries.VAT_OPERATION_REGISTRY.get(id));
@@ -85,7 +84,7 @@ public interface VatOperationWrapper {
                 yield VatOperationSpread.of(op, amount);
             }
 
-            default -> throw new KubeRuntimeException("Failed to read vat operation %s".formatted(from)).source(SourceLine.of(cx));
+            case null, default -> throw new KubeRuntimeException("Failed to read vat operation %s".formatted(from)).source(SourceLine.of(cx));
         };
     }
 }
