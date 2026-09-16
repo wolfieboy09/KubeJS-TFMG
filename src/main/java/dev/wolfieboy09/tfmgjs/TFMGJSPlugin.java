@@ -1,7 +1,6 @@
 package dev.wolfieboy09.tfmgjs;
 
 import com.drmangotea.tfmg.TFMGRegistries;
-import com.drmangotea.tfmg.config.server.TFMGResistivity;
 import com.drmangotea.tfmg.content.electricity.connection.cable_type.CableType;
 import com.drmangotea.tfmg.content.machinery.vat.base.registry.operations.VatOperation;
 import com.drmangotea.tfmg.content.machinery.vat.base.registry.operations.VatOperationEntry;
@@ -18,14 +17,12 @@ import dev.latvian.mods.kubejs.recipe.schema.RecipeFactoryRegistry;
 import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
 import dev.latvian.mods.kubejs.registry.ServerRegistryRegistry;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
-import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
 import dev.wolfieboy09.tfmgjs.bridger.ItemEntryCreator;
 import dev.wolfieboy09.tfmgjs.component.MixerModeComponent;
 import dev.wolfieboy09.tfmgjs.component.VatOperationComponent;
 import dev.wolfieboy09.tfmgjs.component.VatTypeComponent;
 import dev.wolfieboy09.tfmgjs.events.TFMGJSEvents;
-import dev.wolfieboy09.tfmgjs.events.cable.KubeCableBuilder;
 import dev.wolfieboy09.tfmgjs.recipes.TFMGKubeRecipe;
 import dev.wolfieboy09.tfmgjs.registries.PendingEntries;
 import dev.wolfieboy09.tfmgjs.registries.electrode.KubeElectrodeModeBuilder;

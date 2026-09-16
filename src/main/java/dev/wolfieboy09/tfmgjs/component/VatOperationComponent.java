@@ -9,7 +9,6 @@ import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponentType;
 import dev.latvian.mods.kubejs.recipe.component.UniqueIdBuilder;
 import dev.latvian.mods.kubejs.recipe.filter.RecipeMatchContext;
-import dev.latvian.mods.kubejs.util.OpsContainer;
 import dev.latvian.mods.rhino.type.TypeInfo;
 import dev.wolfieboy09.tfmgjs.wrappers.VatOperationWrapper;
 import net.minecraft.MethodsReturnNonnullByDefault;

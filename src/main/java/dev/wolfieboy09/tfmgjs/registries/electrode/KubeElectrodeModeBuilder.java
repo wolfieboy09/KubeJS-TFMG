@@ -1,6 +1,5 @@
 package dev.wolfieboy09.tfmgjs.registries.electrode;
 
-import com.drmangotea.tfmg.content.machinery.vat.base.registry.operations.VatOperation;
 import com.drmangotea.tfmg.content.machinery.vat.base.registry.operations.VatOperationEntry;
 import com.drmangotea.tfmg.content.machinery.vat.electrode_holder.electrode.Electrode;
 import com.drmangotea.tfmg.registry.TFMGVatOperations;
@@ -8,7 +7,6 @@ import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.ReturnsSelf;
 import dev.wolfieboy09.tfmgjs.registries.PendingEntries;
-import dev.wolfieboy09.tfmgjs.wrappers.VatOperationWrapper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
