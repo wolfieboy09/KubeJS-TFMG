@@ -32,7 +32,7 @@ public class KubeCableBuilder implements KubeStartupEvent {
 
         public Builder(ResourceLocation id) {
             this.id = id;
-            this.properties = new PropertyWrapper(id);
+            this.properties = new PropertyWrapper();
         }
 
         @HideFromJS
@@ -53,15 +53,10 @@ public class KubeCableBuilder implements KubeStartupEvent {
     }
 
     public static class PropertyWrapper {
-        private transient final ResourceLocation id;
         private transient int color = 0xFFFFFF;
         private transient float resistivity = 0;
         private transient ItemEntry<?> spool = TFMGItems.COPPER_SPOOL;
         private transient ItemEntry<?> wire = TFMGItems.COPPER_WIRE;
-
-        public PropertyWrapper(ResourceLocation id) {
-            this.id = id;
-        }
 
         @ReturnsSelf
         public PropertyWrapper resistivity(float resistivity) {
