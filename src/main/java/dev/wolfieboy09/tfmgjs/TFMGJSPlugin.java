@@ -1,6 +1,7 @@
 package dev.wolfieboy09.tfmgjs;
 
 import com.drmangotea.tfmg.TFMGRegistries;
+import com.drmangotea.tfmg.config.server.TFMGResistivity;
 import com.drmangotea.tfmg.content.electricity.connection.cable_type.CableType;
 import com.drmangotea.tfmg.content.machinery.vat.base.registry.operations.VatOperation;
 import com.drmangotea.tfmg.content.machinery.vat.base.registry.operations.VatOperationEntry;
@@ -9,6 +10,7 @@ import com.drmangotea.tfmg.content.machinery.vat.electrode_holder.electrode.Elec
 import com.drmangotea.tfmg.content.machinery.vat.industrial_mixer.IndustrialMixerModels;
 import com.drmangotea.tfmg.content.machinery.vat.industrial_mixer.mode.MixerMode;
 import com.drmangotea.tfmg.registry.TFMGPartialModels;
+import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.plugin.ClassFilter;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponentTypeRegistry;
@@ -16,14 +18,16 @@ import dev.latvian.mods.kubejs.recipe.schema.RecipeFactoryRegistry;
 import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
 import dev.latvian.mods.kubejs.registry.ServerRegistryRegistry;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
+import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
 import dev.wolfieboy09.tfmgjs.bridger.ItemEntryCreator;
 import dev.wolfieboy09.tfmgjs.component.MixerModeComponent;
 import dev.wolfieboy09.tfmgjs.component.VatOperationComponent;
 import dev.wolfieboy09.tfmgjs.component.VatTypeComponent;
+import dev.wolfieboy09.tfmgjs.events.TFMGJSEvents;
+import dev.wolfieboy09.tfmgjs.events.cable.KubeCableBuilder;
 import dev.wolfieboy09.tfmgjs.recipes.TFMGKubeRecipe;
 import dev.wolfieboy09.tfmgjs.registries.PendingEntries;
-import dev.wolfieboy09.tfmgjs.registries.cable.KubeCableBuilder;
 import dev.wolfieboy09.tfmgjs.registries.electrode.KubeElectrodeModeBuilder;
 import dev.wolfieboy09.tfmgjs.registries.mixer.KubeMixerModeBuilder;
 import dev.wolfieboy09.tfmgjs.registries.vatops.KubeVatOperationBuilder;
@@ -79,7 +83,30 @@ public class TFMGJSPlugin implements KubeJSPlugin {
         registry.register(TFMGRegistries.VAT_OPERATION, VatOperation.CODEC, VatOperation.class);
         registry.register(TFMGRegistries.MIXER_MODE, TFMGRegistries.MIXER_MODE_REGISTRY.byNameCodec(), MixerMode.class);
         registry.register(TFMGRegistries.ELECTRODE, TFMGRegistries.ELECTRODE_REGISTRY.byNameCodec(), Electrode.class);
-        //registry.register(TFMGRegistries.CABLE_TYPE, TFMGRegistries.CABLE_TYPE_REGISTRY.byNameCodec(), CableType.class);
+        registry.register(TFMGRegistries.CABLE_TYPE, TFMGRegistries.CABLE_TYPE_REGISTRY.byNameCodec(), CableType.class);
+    }
+
+//    @Override
+//    public void initStartup() {
+//        if (TFMGJSEvents.CABLE_TYPES.hasListeners()) {
+//            KubeCableBuilder cableBuilder = new KubeCableBuilder();
+//            TFMGJSEvents.CABLE_TYPES.post(ScriptType.STARTUP, cableBuilder);
+//            for (KubeCableBuilder.Builder builder : cableBuilder.getBuilders()) {
+//                KubeCableBuilder.PropertyWrapper properties = builder.getProperties();
+//                TFMGJS.REGISTRATE.cableType(builder.getId().getPath(), CableType::new)
+//                        .properties(p -> p
+//                                .spool(properties.getSpool())
+//                                .wire(properties.getWire())
+//                                .color(properties.getColor()))
+//                        .transform(TFMGResistivity.setResistivity(properties.getResistivity()))
+//                        .register();
+//            }
+//        }
+//    }
+
+    @Override
+    public void registerEvents(EventGroupRegistry registry) {
+        registry.register(TFMGJSEvents.GROUP);
     }
 
     @Override
