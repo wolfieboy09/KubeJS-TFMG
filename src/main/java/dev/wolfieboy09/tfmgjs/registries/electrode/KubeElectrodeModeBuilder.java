@@ -1,5 +1,6 @@
 package dev.wolfieboy09.tfmgjs.registries.electrode;
 
+import com.drmangotea.tfmg.content.machinery.vat.base.registry.operations.VatOperation;
 import com.drmangotea.tfmg.content.machinery.vat.base.registry.operations.VatOperationEntry;
 import com.drmangotea.tfmg.content.machinery.vat.electrode_holder.electrode.Electrode;
 import com.drmangotea.tfmg.registry.TFMGVatOperations;
@@ -66,8 +67,8 @@ public class KubeElectrodeModeBuilder extends BuilderBase<Electrode> {
         }
 
         @ReturnsSelf
-        public PropertyWrapper operation(Object operation) {
-            this.operation = VatOperationWrapper.wrapVatOperationEntry(null, operation);
+        public PropertyWrapper operation(VatOperationEntry operation) {
+            this.operation = operation;
             return this;
         }
 

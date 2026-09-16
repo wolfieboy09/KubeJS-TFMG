@@ -22,6 +22,10 @@ public interface VatOperationWrapper {
         return from instanceof VatOperation;
     }
 
+    static VatOperation wrapVatOperation(Context cx, Object from) {
+        return wrapVatOperationEntry(cx, from).get();
+    }
+
     static VatOperationEntry wrapVatOperationEntry(Context cx, Object from) {
         return vatOperationEntry(switch (from) {
             case null -> TFMGVatOperations.NONE.getId();

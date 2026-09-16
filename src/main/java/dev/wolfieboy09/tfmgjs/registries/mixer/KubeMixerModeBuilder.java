@@ -49,9 +49,8 @@ public class KubeMixerModeBuilder extends BuilderBase<MixerMode> {
         }
 
         @RemapForJS("operation")
-        public MixerMode.Properties wrapOperation(Object operation) {
-            // Need to call the Mixer mode prop to get it to return correctly on the VatOperationEntry stuff
-            return operation(VatOperationWrapper.wrapVatOperationEntry(null, operation));
+        public MixerMode.Properties wrapOperation(VatOperationEntry operation) {
+            return operation(operation);
         }
     }
 }

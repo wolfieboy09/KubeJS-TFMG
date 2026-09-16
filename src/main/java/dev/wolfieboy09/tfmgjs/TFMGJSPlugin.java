@@ -2,6 +2,7 @@ package dev.wolfieboy09.tfmgjs;
 
 import com.drmangotea.tfmg.TFMGRegistries;
 import com.drmangotea.tfmg.content.machinery.vat.base.registry.operations.VatOperation;
+import com.drmangotea.tfmg.content.machinery.vat.base.registry.operations.VatOperationEntry;
 import com.drmangotea.tfmg.content.machinery.vat.base.registry.types.VatType;
 import com.drmangotea.tfmg.content.machinery.vat.electrode_holder.electrode.Electrode;
 import com.drmangotea.tfmg.content.machinery.vat.industrial_mixer.IndustrialMixerModels;
@@ -50,6 +51,9 @@ public class TFMGJSPlugin implements KubeJSPlugin {
     @Override
     public void registerTypeWrappers(TypeWrapperRegistry registry) {
         registry.register(VatOperationSpread.class, VatOperationWrapper::wrapVatOperationSpread);
+        registry.register(VatOperationEntry.class, VatOperationWrapper::wrapVatOperationEntry);
+        registry.register(VatOperation.class, VatOperationWrapper::wrapVatOperation);
+
         registry.register(VatType.class, VatTypeWrapper::wrapVatType);
     }
 
