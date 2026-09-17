@@ -1,5 +1,6 @@
 package dev.wolfieboy09.tfmgjs;
 
+import com.drmangotea.tfmg.TFMG;
 import com.drmangotea.tfmg.TFMGRegistries;
 import com.drmangotea.tfmg.content.electricity.connection.cable_type.CableType;
 import com.drmangotea.tfmg.content.machinery.vat.base.registry.operations.VatOperation;
@@ -9,7 +10,11 @@ import com.drmangotea.tfmg.content.machinery.vat.electrode_holder.electrode.Elec
 import com.drmangotea.tfmg.content.machinery.vat.industrial_mixer.IndustrialMixerModels;
 import com.drmangotea.tfmg.content.machinery.vat.industrial_mixer.mode.MixerMode;
 import com.drmangotea.tfmg.registry.TFMGPartialModels;
+import com.google.common.collect.Sets;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.event.EventGroupRegistry;
+import dev.latvian.mods.kubejs.generator.KubeDataGenerator;
 import dev.latvian.mods.kubejs.plugin.ClassFilter;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponentTypeRegistry;
@@ -17,28 +22,41 @@ import dev.latvian.mods.kubejs.recipe.schema.RecipeFactoryRegistry;
 import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
 import dev.latvian.mods.kubejs.registry.ServerRegistryRegistry;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
+import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
 import dev.wolfieboy09.tfmgjs.bridger.ItemEntryCreator;
 import dev.wolfieboy09.tfmgjs.component.MixerModeComponent;
 import dev.wolfieboy09.tfmgjs.component.VatOperationComponent;
 import dev.wolfieboy09.tfmgjs.component.VatTypeComponent;
+import dev.wolfieboy09.tfmgjs.content.WrappedFluid;
 import dev.wolfieboy09.tfmgjs.events.TFMGJSEvents;
 import dev.wolfieboy09.tfmgjs.recipes.TFMGKubeRecipe;
 import dev.wolfieboy09.tfmgjs.registries.PendingEntries;
 import dev.wolfieboy09.tfmgjs.registries.electrode.KubeElectrodeModeBuilder;
+import dev.wolfieboy09.tfmgjs.registries.fuel.BasicFuelBuilder;
+import dev.wolfieboy09.tfmgjs.registries.fuel.EngineFuelEvent;
+import dev.wolfieboy09.tfmgjs.registries.fuel.FlamethrowerFuelEvent;
 import dev.wolfieboy09.tfmgjs.registries.mixer.KubeMixerModeBuilder;
 import dev.wolfieboy09.tfmgjs.registries.vatops.KubeVatOperationBuilder;
 import dev.wolfieboy09.tfmgjs.wrappers.VatOperationSpread;
 import dev.wolfieboy09.tfmgjs.wrappers.VatOperationWrapper;
 import dev.wolfieboy09.tfmgjs.wrappers.VatTypeWrapper;
+import dev.wolfieboy09.tfmgjs.wrappers.WrappedFluidWrapper;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Set;
 
 @ParametersAreNonnullByDefault
 public class TFMGJSPlugin implements KubeJSPlugin {
     public static final ResourceLocation PROCESSING_RECIPE_FACTORY =
             ResourceLocation.fromNamespaceAndPath(TFMGJS.MODID, "processing");
+
+    private static final Set<ResourceLocation> pendingCylinders = Sets.newHashSet();
+
+    public static void addPendingCylinder(ResourceLocation id) {
+        pendingCylinders.add(id);
+    }
 
     @Override
     public void registerRecipeFactories(RecipeFactoryRegistry registry) {
@@ -57,8 +75,9 @@ public class TFMGJSPlugin implements KubeJSPlugin {
         registry.register(VatOperationSpread.class, VatOperationWrapper::wrapVatOperationSpread);
         registry.register(VatOperationEntry.class, VatOperationWrapper::wrapVatOperationEntry);
         registry.register(VatOperation.class, VatOperationWrapper::wrapVatOperation);
-
         registry.register(VatType.class, VatTypeWrapper::wrapVatType);
+
+        registry.register(WrappedFluid.class, WrappedFluidWrapper::wrapFluid);
     }
 
     @Override
@@ -72,7 +91,6 @@ public class TFMGJSPlugin implements KubeJSPlugin {
         registry.of(TFMGRegistries.VAT_OPERATION, reg -> reg.addDefault(KubeVatOperationBuilder.class, KubeVatOperationBuilder::new));
         registry.of(TFMGRegistries.MIXER_MODE, reg -> reg.addDefault(KubeMixerModeBuilder.class, KubeMixerModeBuilder::new));
         registry.of(TFMGRegistries.ELECTRODE, reg -> reg.addDefault(KubeElectrodeModeBuilder.class, KubeElectrodeModeBuilder::new));
-        //registry.of(TFMGRegistries.CABLE_TYPE, reg -> reg.addDefault(KubeCableBuilder.class, KubeCableBuilder::new));
     }
 
     @Override
@@ -83,6 +101,63 @@ public class TFMGJSPlugin implements KubeJSPlugin {
         registry.register(TFMGRegistries.CABLE_TYPE, TFMGRegistries.CABLE_TYPE_REGISTRY.byNameCodec(), CableType.class);
     }
 
+    @Override
+    public void generateData(KubeDataGenerator generator) {
+        if (TFMGJSEvents.ENGINE_FUEL.hasListeners()) {
+            EngineFuelEvent engineFuel = new EngineFuelEvent();
+            TFMGJSEvents.ENGINE_FUEL.post(ScriptType.SERVER, engineFuel);
+
+            for (BasicFuelBuilder.FuelEntry entry : engineFuel.construct()) {
+                generator.json(
+                        ResourceLocation.fromNamespaceAndPath(entry.id().getNamespace(), "tfmg/fuel_type/engine/" + entry.id().getPath()),
+                        entry.json()
+                );
+            }
+
+            if (!pendingCylinders.isEmpty()) {
+                JsonArray values = new JsonArray();
+                pendingCylinders.forEach(id -> values.add(id.toString()));
+
+                JsonObject tagJson = new JsonObject();
+                tagJson.addProperty("replace", false);
+                tagJson.add("values", values);
+
+                generator.json(
+                        TFMG.asResource("tags/item/engine/cylinder"),
+                        tagJson
+                );
+
+                pendingCylinders.clear();
+            }
+        }
+
+        if (TFMGJSEvents.FLAMETHROWER_FUEL.hasListeners()) {
+            FlamethrowerFuelEvent flamethrowerFuel = new FlamethrowerFuelEvent();
+            TFMGJSEvents.FLAMETHROWER_FUEL.post(ScriptType.SERVER, flamethrowerFuel);
+
+            for (BasicFuelBuilder.FuelEntry entry : flamethrowerFuel.construct()) {
+                generator.json(
+                        ResourceLocation.fromNamespaceAndPath(entry.id().getNamespace(), "tfmg/fuel_type/flamethrower/" + entry.id().getPath()),
+                        entry.json()
+                );
+            }
+        }
+    }
+
+    @Override
+    public void registerEvents(EventGroupRegistry registry) {
+        registry.register(TFMGJSEvents.GROUP);
+    }
+
+    @Override
+    public void registerClasses(ClassFilter filter) {
+        filter.deny(PendingEntries.class);
+        filter.deny(ItemEntryCreator.class);
+    }
+
+    //TODO: WHY REGISTRATE, WHYYYYY
+    // Get this to register correctly, and get SpoolItem correctly
+    // That's a later problem really
 //    @Override
 //    public void initStartup() {
 //        if (TFMGJSEvents.CABLE_TYPES.hasListeners()) {
@@ -100,15 +175,4 @@ public class TFMGJSPlugin implements KubeJSPlugin {
 //            }
 //        }
 //    }
-
-    @Override
-    public void registerEvents(EventGroupRegistry registry) {
-        registry.register(TFMGJSEvents.GROUP);
-    }
-
-    @Override
-    public void registerClasses(ClassFilter filter) {
-        filter.deny(PendingEntries.class);
-        filter.deny(ItemEntryCreator.class);
-    }
 }

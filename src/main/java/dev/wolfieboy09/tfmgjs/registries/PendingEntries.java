@@ -1,11 +1,14 @@
 package dev.wolfieboy09.tfmgjs.registries;
 
 import com.drmangotea.tfmg.TFMGRegistries;
+import com.drmangotea.tfmg.base.data_storage.CylinderFuels;
+import com.drmangotea.tfmg.content.engines.fuels.EngineFuelType;
 import com.drmangotea.tfmg.content.machinery.vat.electrode_holder.electrode.Electrode;
 import com.drmangotea.tfmg.content.machinery.vat.industrial_mixer.mode.MixerMode;
 import com.drmangotea.tfmg.registry.TFMGDataComponents;
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
+import dev.wolfieboy09.tfmgjs.TFMGJSPlugin;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -13,13 +16,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class PendingEntries {
     private static final Map<ResourceLocation, ResourceLocation> MIXER_MODE = new LinkedHashMap<>();
     private static final Map<ResourceLocation, ResourceLocation> ELECTRODE_ITEM = new LinkedHashMap<>();
+    private static final Map<ResourceLocation, List<ResourceLocation>> CYLINDER_ITEM = new LinkedHashMap<>();
 
     public static void addMixerMode(ResourceLocation itemId, ResourceLocation modeId) {
         ResourceLocation previous = MIXER_MODE.put(itemId, modeId);
@@ -32,6 +34,13 @@ public class PendingEntries {
         ResourceLocation previous = ELECTRODE_ITEM.put(itemId, electrodeId);
         if (previous != null && !previous.equals(electrodeId)) {
             ConsoleJS.STARTUP.warn("Item %s already had electrode %s, overwriting with %s".formatted(itemId, previous, electrodeId));
+        }
+    }
+
+    public static void addCylinderItem(ResourceLocation itemId, List<ResourceLocation> fuelTypeIds) {
+        List<ResourceLocation> previous = CYLINDER_ITEM.put(itemId, fuelTypeIds);
+        if (previous != null && !previous.equals(fuelTypeIds)) {
+            ConsoleJS.STARTUP.warn("Item %s already had cylinder fuels %s, overwriting with %s".formatted(itemId, previous, fuelTypeIds));
         }
     }
 
@@ -49,6 +58,21 @@ public class PendingEntries {
 
             event.modify(item.get(), builder -> builder.set(TFMGDataComponents.MIXER_MODE, new MixerMode.Stored(holder))
             );
+        });
+
+        CYLINDER_ITEM.forEach((itemId, fuelTypeIds) -> {
+            Optional<Item> item = BuiltInRegistries.ITEM.getOptional(itemId);
+            if (item.isEmpty()) {
+                throw new KubeRuntimeException("Could not resolve item %s for cylinder %s".formatted(itemId, fuelTypeIds));
+            }
+
+            TFMGJSPlugin.addPendingCylinder(item.get().kjs$getIdLocation());
+
+            List<ResourceKey<EngineFuelType>> validFuels = fuelTypeIds.stream()
+                    .map(PendingEntries::resolveEngineFuel)
+                    .toList();
+
+            event.modify(item.get(), builder -> builder.set(TFMGDataComponents.ENGINE_CYLINDER, new CylinderFuels(validFuels)));
         });
 
         ELECTRODE_ITEM.forEach((itemId, electrodeId) -> {
@@ -80,8 +104,13 @@ public class PendingEntries {
                 .orElse(null);
     }
 
+    private static ResourceKey<EngineFuelType> resolveEngineFuel(ResourceLocation id) {
+        return ResourceKey.create(TFMGRegistries.ENGINE_FUEL_TYPE, id);
+    }
+
     private static void clear() {
         MIXER_MODE.clear();
         ELECTRODE_ITEM.clear();
+        CYLINDER_ITEM.clear();
     }
 }

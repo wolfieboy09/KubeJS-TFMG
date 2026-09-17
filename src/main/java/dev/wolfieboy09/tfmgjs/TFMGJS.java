@@ -2,6 +2,7 @@ package dev.wolfieboy09.tfmgjs;
 
 import com.mojang.logging.LogUtils;
 import dev.wolfieboy09.tfmgjs.registries.PendingEntries;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -16,5 +17,9 @@ public class TFMGJS {
 
     public TFMGJS(IEventBus bus, ModContainer container) {
         bus.addListener(PendingEntries::onModifyDefaultComponents);
+    }
+
+    public static ResourceLocation asResource(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 }
