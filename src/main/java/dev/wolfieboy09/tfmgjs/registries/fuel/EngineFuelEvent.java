@@ -42,7 +42,7 @@ public class EngineFuelEvent implements KubeEvent {
         private float torque = 1;
 
         @ReturnsSelf
-        public BasicFuelBuilder accepts(Item... items) {
+        public Builder accepts(Item... items) {
             for (Item item : items) {
                 List<ResourceLocation> locationList = fluid.getFluids().stream().map(RegistryObjectKJS::kjs$getIdLocation).toList();
                 PendingEntries.addCylinderItem(item.kjs$getIdLocation(), locationList);
