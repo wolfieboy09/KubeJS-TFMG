@@ -1,11 +1,16 @@
 package dev.wolfieboy09.tfmgjs.registries.fuel;
 
+import dev.latvian.mods.kubejs.core.RegistryObjectKJS;
 import dev.latvian.mods.kubejs.event.KubeEvent;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.ReturnsSelf;
 import dev.wolfieboy09.tfmgjs.content.WrappedFluid;
+import dev.wolfieboy09.tfmgjs.registries.PendingEntries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class EngineFuelEvent implements KubeEvent {
     private final LinkedList<Builder> builders = new LinkedList<>();
@@ -35,6 +40,16 @@ public class EngineFuelEvent implements KubeEvent {
     public static class Builder extends BasicFuelBuilder {
         private float efficiency = 1;
         private float torque = 1;
+
+        @ReturnsSelf
+        public BasicFuelBuilder accepts(Item... items) {
+            for (Item item : items) {
+                List<ResourceLocation> locationList = fluid.getFluids().stream().map(RegistryObjectKJS::kjs$getIdLocation).toList();
+                PendingEntries.addCylinderItem(item.kjs$getIdLocation(), locationList);
+            }
+
+            return this;
+        }
 
         public Builder(WrappedFluid fluid) {
             super(fluid);

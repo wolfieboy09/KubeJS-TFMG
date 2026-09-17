@@ -18,7 +18,7 @@ import net.minecraft.world.level.material.Fluid;
 import java.util.List;
 
 public class BasicFuelBuilder {
-    private final WrappedFluid fluid;
+    protected final WrappedFluid fluid;
     private float speed = 1;
 
     public BasicFuelBuilder(WrappedFluid fluid) {
@@ -67,16 +67,6 @@ public class BasicFuelBuilder {
     @ReturnsSelf
     public BasicFuelBuilder speed(float speed) {
         this.speed = speed;
-        return this;
-    }
-
-    @ReturnsSelf
-    public BasicFuelBuilder accepts(Item... items) {
-        for (Item item : items) {
-            List<ResourceLocation> locationList = this.fluid.getFluids().stream().map(RegistryObjectKJS::kjs$getIdLocation).toList();
-            PendingEntries.addCylinderItem(item.kjs$getIdLocation(), locationList);
-        }
-
         return this;
     }
 
