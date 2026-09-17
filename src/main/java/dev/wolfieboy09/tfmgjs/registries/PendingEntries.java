@@ -8,7 +8,10 @@ import com.drmangotea.tfmg.content.machinery.vat.industrial_mixer.mode.MixerMode
 import com.drmangotea.tfmg.registry.TFMGDataComponents;
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
+import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.wolfieboy09.tfmgjs.TFMGJSPlugin;
+import dev.wolfieboy09.tfmgjs.events.TFMGJSEvents;
+import dev.wolfieboy09.tfmgjs.registries.fuel.EngineFuelEvent;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -21,7 +24,6 @@ import java.util.*;
 public class PendingEntries {
     private static final Map<ResourceLocation, ResourceLocation> MIXER_MODE = new LinkedHashMap<>();
     private static final Map<ResourceLocation, ResourceLocation> ELECTRODE_ITEM = new LinkedHashMap<>();
-    private static final Map<ResourceLocation, List<ResourceLocation>> CYLINDER_ITEM = new LinkedHashMap<>();
 
     public static void addMixerMode(ResourceLocation itemId, ResourceLocation modeId) {
         ResourceLocation previous = MIXER_MODE.put(itemId, modeId);
@@ -37,14 +39,29 @@ public class PendingEntries {
         }
     }
 
-    public static void addCylinderItem(ResourceLocation itemId, List<ResourceLocation> fuelTypeIds) {
-        List<ResourceLocation> previous = CYLINDER_ITEM.put(itemId, fuelTypeIds);
-        if (previous != null && !previous.equals(fuelTypeIds)) {
-            ConsoleJS.STARTUP.warn("Item %s already had cylinder fuels %s, overwriting with %s".formatted(itemId, previous, fuelTypeIds));
-        }
-    }
-
     public static void onModifyDefaultComponents(ModifyDefaultComponentsEvent event) {
+        if (TFMGJSEvents.ENGINE_FUEL.hasListeners()) {
+            EngineFuelEvent engineFuel = new EngineFuelEvent();
+            TFMGJSEvents.ENGINE_FUEL.post(ScriptType.SERVER, engineFuel);
+
+            for (EngineFuelEvent.Builder b : engineFuel.getBuilders()) {
+                for (ResourceLocation itemId : b.getAcceptedItems()) {
+                    Optional<Item> item = BuiltInRegistries.ITEM.getOptional(itemId);
+                    if (item.isEmpty()) {
+                        throw new KubeRuntimeException("Could not resolve item %s for cylinder %s".formatted(itemId, b.getFluid().getFluids()));
+                    }
+
+                    TFMGJSPlugin.addPendingCylinder(item.get().kjs$getIdLocation());
+
+                    List<ResourceKey<EngineFuelType>> validFuels = b.getFluid().getFluids().stream()
+                            .map(a -> resolveEngineFuel(a.kjs$getIdLocation()))
+                            .toList();
+
+                    event.modify(item.get(), builder -> builder.set(TFMGDataComponents.ENGINE_CYLINDER, new CylinderFuels(validFuels)));
+                }
+            }
+        }
+
         MIXER_MODE.forEach((itemId, modeId) -> {
             Optional<Item> item = BuiltInRegistries.ITEM.getOptional(itemId);
             if (item.isEmpty()) {
@@ -58,21 +75,6 @@ public class PendingEntries {
 
             event.modify(item.get(), builder -> builder.set(TFMGDataComponents.MIXER_MODE, new MixerMode.Stored(holder))
             );
-        });
-
-        CYLINDER_ITEM.forEach((itemId, fuelTypeIds) -> {
-            Optional<Item> item = BuiltInRegistries.ITEM.getOptional(itemId);
-            if (item.isEmpty()) {
-                throw new KubeRuntimeException("Could not resolve item %s for cylinder %s".formatted(itemId, fuelTypeIds));
-            }
-
-            TFMGJSPlugin.addPendingCylinder(item.get().kjs$getIdLocation());
-
-            List<ResourceKey<EngineFuelType>> validFuels = fuelTypeIds.stream()
-                    .map(PendingEntries::resolveEngineFuel)
-                    .toList();
-
-            event.modify(item.get(), builder -> builder.set(TFMGDataComponents.ENGINE_CYLINDER, new CylinderFuels(validFuels)));
         });
 
         ELECTRODE_ITEM.forEach((itemId, electrodeId) -> {
@@ -111,6 +113,5 @@ public class PendingEntries {
     private static void clear() {
         MIXER_MODE.clear();
         ELECTRODE_ITEM.clear();
-        CYLINDER_ITEM.clear();
     }
 }

@@ -15,8 +15,8 @@ import java.util.function.Consumer;
 
 @ParametersAreNonnullByDefault
 public class KubeElectrodeModeBuilder extends BuilderBase<Electrode> {
-    private final transient PropertyWrapper properties;
-    private transient VatTickTask tickTask = (vat, level, pos, active, clientTick) -> {};
+    private final PropertyWrapper properties;
+    private VatTickTask tickTask = (vat, level, pos, active, clientTick) -> {};
 
     public KubeElectrodeModeBuilder(ResourceLocation id) {
         super(id);

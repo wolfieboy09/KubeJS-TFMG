@@ -37,22 +37,29 @@ public class EngineFuelEvent implements KubeEvent {
         return result;
     }
 
+    @HideFromJS
+    public LinkedList<Builder> getBuilders() {
+        return this.builders;
+    }
+
     public static class Builder extends BasicFuelBuilder {
         private float efficiency = 1;
         private float torque = 1;
+        private final LinkedList<ResourceLocation> acceptedItems = new LinkedList<>();
 
         @ReturnsSelf
         public Builder accepts(Item... items) {
-            for (Item item : items) {
-                List<ResourceLocation> locationList = fluid.getFluids().stream().map(RegistryObjectKJS::kjs$getIdLocation).toList();
-                PendingEntries.addCylinderItem(item.kjs$getIdLocation(), locationList);
-            }
-
+            acceptedItems.addAll(fluid.getFluids().stream().map(RegistryObjectKJS::kjs$getIdLocation).toList());
             return this;
         }
 
         public Builder(WrappedFluid fluid) {
             super(fluid);
+        }
+
+        @HideFromJS
+        public LinkedList<ResourceLocation> getAcceptedItems() {
+            return this.acceptedItems;
         }
 
         @ReturnsSelf
