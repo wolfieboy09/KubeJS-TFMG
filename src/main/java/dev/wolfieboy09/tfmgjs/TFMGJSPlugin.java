@@ -13,10 +13,12 @@ import com.drmangotea.tfmg.registry.TFMGPartialModels;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import dev.latvian.mods.kubejs.client.LangKubeEvent;
 import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.generator.KubeDataGenerator;
 import dev.latvian.mods.kubejs.plugin.ClassFilter;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
+import dev.latvian.mods.kubejs.plugin.builtin.wrapper.StringUtilsWrapper;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponentTypeRegistry;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeFactoryRegistry;
 import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
@@ -33,8 +35,10 @@ import dev.wolfieboy09.tfmgjs.events.TFMGJSEvents;
 import dev.wolfieboy09.tfmgjs.recipes.TFMGKubeRecipe;
 import dev.wolfieboy09.tfmgjs.registries.PendingEntries;
 import dev.wolfieboy09.tfmgjs.registries.electrode.KubeElectrodeModeBuilder;
-import dev.wolfieboy09.tfmgjs.registries.fuel.BasicFuelBuilder;
-import dev.wolfieboy09.tfmgjs.registries.fuel.EngineFuelEvent;
+import dev.wolfieboy09.tfmgjs.registries.fuel.engine.EngineFuelManager;
+import dev.wolfieboy09.tfmgjs.registries.fuel.framework.BasicFuelBuilder;
+import dev.wolfieboy09.tfmgjs.registries.fuel.engine.EngineFuelEvent;
+import dev.wolfieboy09.tfmgjs.registries.fuel.engine.EngineFuelStartup;
 import dev.wolfieboy09.tfmgjs.registries.fuel.FlamethrowerFuelEvent;
 import dev.wolfieboy09.tfmgjs.registries.mixer.KubeMixerModeBuilder;
 import dev.wolfieboy09.tfmgjs.registries.vatops.KubeVatOperationBuilder;
@@ -99,6 +103,20 @@ public class TFMGJSPlugin implements KubeJSPlugin {
         registry.register(TFMGRegistries.MIXER_MODE, TFMGRegistries.MIXER_MODE_REGISTRY.byNameCodec(), MixerMode.class);
         registry.register(TFMGRegistries.ELECTRODE, TFMGRegistries.ELECTRODE_REGISTRY.byNameCodec(), Electrode.class);
         registry.register(TFMGRegistries.CABLE_TYPE, TFMGRegistries.CABLE_TYPE_REGISTRY.byNameCodec(), CableType.class);
+    }
+
+    @Override
+    public void initStartup() {
+        if (TFMGJSEvents.ENGINE_FUEL_STARTUP.hasListeners()) {
+            TFMGJSEvents.ENGINE_FUEL_STARTUP.post(ScriptType.STARTUP, new EngineFuelStartup());
+        }
+    }
+
+    @Override
+    public void generateLang(LangKubeEvent event) {
+        for (ResourceLocation id : EngineFuelManager.getEngineFuelMap().keySet()) {
+            event.add("engine_fuel."+ id.getNamespace() + "." + id.getPath(), StringUtilsWrapper.snakeCaseToTitleCase(id.getPath()));
+        }
     }
 
     @Override

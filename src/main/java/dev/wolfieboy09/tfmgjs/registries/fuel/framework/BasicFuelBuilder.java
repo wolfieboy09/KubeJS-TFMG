@@ -1,27 +1,32 @@
-package dev.wolfieboy09.tfmgjs.registries.fuel;
+package dev.wolfieboy09.tfmgjs.registries.fuel.framework;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import dev.latvian.mods.kubejs.core.RegistryObjectKJS;
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.ReturnsSelf;
 import dev.wolfieboy09.tfmgjs.content.WrappedFluid;
-import dev.wolfieboy09.tfmgjs.registries.PendingEntries;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
 
 import java.util.List;
 
 public class BasicFuelBuilder {
-    protected final WrappedFluid fluid;
+    protected ResourceLocation id;
+    protected WrappedFluid fluid = WrappedFluid.EMPTY;
     private float speed = 1;
 
-    public BasicFuelBuilder(WrappedFluid fluid) {
+    public BasicFuelBuilder() {}
+
+    public BasicFuelBuilder(ResourceLocation id) {
+        this.id = id;
+    }
+
+    public BasicFuelBuilder(ResourceLocation id, WrappedFluid fluid) {
+        this.id = id;
         this.fluid = fluid;
     }
 
@@ -56,12 +61,27 @@ public class BasicFuelBuilder {
     }
 
     @HideFromJS
+    public ResourceLocation getId() {
+        return this.id;
+    }
+
+    @HideFromJS
     public ResourceLocation getFileId() {
+        if (this.id != null) {
+            return this.id;
+        }
+
         if (this.fluid.isTag()) {
             return this.fluid.getTag().location();
         }
 
         return BuiltInRegistries.FLUID.getKey(this.fluid.getFluids().getFirst());
+    }
+
+    @ReturnsSelf
+    public BasicFuelBuilder fluids(WrappedFluid fluid) {
+        this.fluid = fluid;
+        return this;
     }
 
     @ReturnsSelf

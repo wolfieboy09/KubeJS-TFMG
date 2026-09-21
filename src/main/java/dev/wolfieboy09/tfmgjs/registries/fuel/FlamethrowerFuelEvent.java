@@ -4,6 +4,7 @@ import dev.latvian.mods.kubejs.event.KubeEvent;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.ReturnsSelf;
 import dev.wolfieboy09.tfmgjs.content.WrappedFluid;
+import dev.wolfieboy09.tfmgjs.registries.fuel.framework.BasicFuelBuilder;
 
 import java.util.LinkedList;
 
@@ -38,7 +39,8 @@ public class FlamethrowerFuelEvent implements KubeEvent {
         private float spread = 1;
 
         public Builder(WrappedFluid fluid) {
-            super(fluid);
+            super();
+            fluids(fluid);
         }
 
         @ReturnsSelf

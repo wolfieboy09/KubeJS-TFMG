@@ -8,10 +8,9 @@ import com.drmangotea.tfmg.content.machinery.vat.industrial_mixer.mode.MixerMode
 import com.drmangotea.tfmg.registry.TFMGDataComponents;
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
-import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.wolfieboy09.tfmgjs.TFMGJSPlugin;
-import dev.wolfieboy09.tfmgjs.events.TFMGJSEvents;
-import dev.wolfieboy09.tfmgjs.registries.fuel.EngineFuelEvent;
+import dev.wolfieboy09.tfmgjs.registries.fuel.engine.EngineFuelEvent;
+import dev.wolfieboy09.tfmgjs.registries.fuel.engine.EngineFuelManager;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -40,22 +39,19 @@ public class PendingEntries {
     }
 
     public static void onModifyDefaultComponents(ModifyDefaultComponentsEvent event) {
-        if (TFMGJSEvents.ENGINE_FUEL.hasListeners()) {
-            EngineFuelEvent engineFuel = new EngineFuelEvent();
-            TFMGJSEvents.ENGINE_FUEL.post(ScriptType.SERVER, engineFuel);
+        if (!EngineFuelManager.getEngineFuelMap().isEmpty()) {
+            for (Map.Entry<ResourceLocation, EngineFuelEvent> entry : EngineFuelManager.getEngineFuelMap().entrySet()) {
+                ResourceLocation fuelId = entry.getKey();
 
-            for (EngineFuelEvent.Builder b : engineFuel.getBuilders()) {
-                for (ResourceLocation itemId : b.getAcceptedItems()) {
+                for (ResourceLocation itemId : entry.getValue().getAcceptedItems()) {
                     Optional<Item> item = BuiltInRegistries.ITEM.getOptional(itemId);
                     if (item.isEmpty()) {
-                        throw new KubeRuntimeException("Could not resolve item %s for cylinder %s".formatted(itemId, b.getFluid().getFluids()));
+                        throw new KubeRuntimeException("Could not resolve item %s for engine fuel %s".formatted(itemId, fuelId));
                     }
 
                     TFMGJSPlugin.addPendingCylinder(item.get().kjs$getIdLocation());
 
-                    List<ResourceKey<EngineFuelType>> validFuels = b.getFluid().getFluids().stream()
-                            .map(a -> resolveEngineFuel(a.kjs$getIdLocation()))
-                            .toList();
+                    List<ResourceKey<EngineFuelType>> validFuels = List.of(resolveEngineFuel(fuelId));
 
                     event.modify(item.get(), builder -> builder.set(TFMGDataComponents.ENGINE_CYLINDER, new CylinderFuels(validFuels)));
                 }
