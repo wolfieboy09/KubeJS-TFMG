@@ -19,6 +19,8 @@ public class BasicFuelBuilder {
     protected WrappedFluid fluid = WrappedFluid.EMPTY;
     private float speed = 1;
 
+    private boolean allowFluidMethod = true;
+
     public BasicFuelBuilder() {}
 
     public BasicFuelBuilder(ResourceLocation id) {
@@ -28,6 +30,11 @@ public class BasicFuelBuilder {
     public BasicFuelBuilder(ResourceLocation id, WrappedFluid fluid) {
         this.id = id;
         this.fluid = fluid;
+    }
+
+    @HideFromJS
+    public void disallowFluidMethod() {
+        this.allowFluidMethod = false;
     }
 
     @HideFromJS
@@ -43,6 +50,7 @@ public class BasicFuelBuilder {
         return new FuelEntry(getFileId(), json);
     }
 
+    @HideFromJS
     private JsonElement serializeFluid() {
         if (this.fluid.isTag()) {
             return new JsonPrimitive("#" + this.fluid.getTag().location());
@@ -80,8 +88,14 @@ public class BasicFuelBuilder {
 
     @ReturnsSelf
     public BasicFuelBuilder fluids(WrappedFluid fluid) {
+        if (!allowFluidMethod) throw new KubeRuntimeException("This event does not allow defining fluids via fluids(WrappedFluid)!");
         this.fluid = fluid;
         return this;
+    }
+
+    @HideFromJS
+    public void setFluids(WrappedFluid fluid) {
+        this.fluid = fluid;
     }
 
     @ReturnsSelf

@@ -39,8 +39,8 @@ public class FlamethrowerFuelEvent implements KubeEvent {
         private float spread = 1;
 
         public Builder(WrappedFluid fluid) {
-            super();
-            fluids(fluid);
+            disallowFluidMethod();
+            setFluids(fluid);
         }
 
         @ReturnsSelf
