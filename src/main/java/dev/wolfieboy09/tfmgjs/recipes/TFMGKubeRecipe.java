@@ -21,15 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Shared recipe object used by the data-driven TFMG schemas.
- *
- * <p>Create stores item and fluid values in the same JSON arrays. KubeJS Create
- * represents every entry as an {@link Either}. The exact side is schema-specific,
- * so validation classifies the wrapped value by its actual item/fluid type. Keeping
- * the limits here lets all eight schemas reject recipes before TFMG machines index
- * a missing input or output.</p>
- */
+
 @SuppressWarnings("unused")
 public final class TFMGKubeRecipe extends KubeRecipe {
     private static final Map<String, Shape> SHAPES = Map.of(
