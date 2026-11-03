@@ -60,7 +60,7 @@ public record VatOperationComponent(RecipeComponentType<?> type, Codec<VatOperat
     }
 
     static VatOperation mixing() {
-        return TFMGVatOperations.MIXING.get();
+        return TFMGVatOperations.MIXER.get();
     }
 
     static VatOperation centrifuge() {
@@ -68,6 +68,6 @@ public record VatOperationComponent(RecipeComponentType<?> type, Codec<VatOperat
     }
 
     static VatOperation freezing() {
-        return TFMGVatOperations.FREEZING.get();
+        return TFMGVatOperations.FREEZER.get();
     }
 }

@@ -16,6 +16,8 @@ import dev.wolfieboy09.tfmgjs.wrappers.VatOperationSpread;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +34,7 @@ public final class TFMGKubeRecipe extends KubeRecipe {
             "polarizing", new Shape(1, 1, 0, 0, 1, 1, 0, 0, false, false),
             "winding", new Shape(2, 2, 0, 0, 1, 1, 0, 0, false, false),
             "hot_blast", new Shape(0, 0, 2, 2, 0, 0, 2, 2, false, false),
-            "vat_machine_recipe", new Shape(0, 4, 0, 4, 0, 4, 0, 4, true, true)
+            "vat", new Shape(0, 4, 0, 4, 0, 4, 0, 4, true, true)
     );
 
     @Override
@@ -199,7 +201,7 @@ public final class TFMGKubeRecipe extends KubeRecipe {
     }
 
     private void requireVatMethod(String method) {
-        requireType("vat_machine_recipe", method);
+        requireType("vat", method);
     }
 
     private void validateSpecialValue(String key, Object value) {
@@ -265,13 +267,12 @@ public final class TFMGKubeRecipe extends KubeRecipe {
     }
 
     private boolean isVatRecipe() {
-        return "vat_machine_recipe".equals(recipePath());
+        return "vat".equals(recipePath());
     }
 
-    private String recipePath() {
-        var path = type == null ? "unknown" : type.id.getPath();
-        // "vat" is short for "vat_machine_recipe" and we need to do that here for later in the pipeline
-        return "vat".equals(path) ? "vat_machine_recipe" : path;
+    @Contract(pure = true)
+    private @NotNull String recipePath() {
+        return type == null ? "unknown" : type.id.getPath();
     }
 
     private record Counts(int items, int fluids) {

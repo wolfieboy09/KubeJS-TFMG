@@ -52,6 +52,6 @@ side="BOTH"
 modId="tfmg"
 type="required"
 # TODO: Change when 1.3.3 releases
-versionRange="[${tfmg_version},1.3.3)"
+versionRange="[${tfmg_version},)"
 ordering="NONE"
 side="BOTH"
