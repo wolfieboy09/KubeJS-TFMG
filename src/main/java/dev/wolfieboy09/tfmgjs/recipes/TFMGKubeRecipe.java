@@ -26,15 +26,19 @@ import java.util.Map;
 
 @SuppressWarnings("unused")
 public final class TFMGKubeRecipe extends KubeRecipe {
+    // item input
+    // fluid input
+    // item output
+    // fluid output
     private static final Map<String, Shape> SHAPES = Map.of(
-            "casting", new Shape(0, 0, 1, 1, 1, 1, 0, 0, false, false),
-            "coking", new Shape(1, 1, 0, 0, 1, 1, 2, 2, false, false),
-            "distillation", new Shape(0, 0, 1, 1, 0, 0, 1, 6, false, true),
-            "industrial_blasting", new Shape(1, 2, 0, 0, 0, 0, 1, 3, false, false),
-            "polarizing", new Shape(1, 1, 0, 0, 1, 1, 0, 0, false, false),
-            "winding", new Shape(2, 2, 0, 0, 1, 1, 0, 0, false, false),
-            "hot_blast", new Shape(0, 0, 2, 2, 0, 0, 2, 2, false, false),
-            "vat", new Shape(0, 4, 0, 4, 0, 4, 0, 4, true, true)
+            "casting",              new Shape(range(0), range(1), range(1), range(0), false, false),
+            "industrial_blasting",  new Shape(range(1, 2), range(0), range(0), range(1, 3), false, false),
+            "coking",               new Shape(range(1), range(0), range(1), range(2), false, false),
+            "distillation",         new Shape(range(0), range(1), range(0), range(3, 6), false, true),
+            "winding",              new Shape(range(2), range(0), range(1), range(0), false, false),
+            "polarizing",           new Shape(range(1), range(0), range(1), range(0), false, false),
+            "hot_blast",            new Shape(range(0), range(2), range(0), range(2), false, false),
+            "vat",                  new Shape(range(0, 4), range(0, 1), range(0, 3), range(0, 2), true, true)
     );
 
     @Override
@@ -275,26 +279,31 @@ public final class TFMGKubeRecipe extends KubeRecipe {
         return type == null ? "unknown" : type.id.getPath();
     }
 
-    private record Counts(int items, int fluids) {
+    private record Counts(int items, int fluids) {}
+
+    private record MinMax(int min, int max) { }
+
+    private static MinMax range(int hard) {
+        return new MinMax(hard, hard);
+    }
+
+    private static MinMax range(int min, int max) {
+        return new MinMax(min, max);
     }
 
     private record Shape(
-            int minItemInputs,
-            int maxItemInputs,
-            int minFluidInputs,
-            int maxFluidInputs,
-            int minItemOutputs,
-            int maxItemOutputs,
-            int minFluidOutputs,
-            int maxFluidOutputs,
+            MinMax itemInput,
+            MinMax fluidsInput,
+            MinMax itemOutput,
+            MinMax fluidsOutput,
             boolean requireAnyInputAndOutput,
             boolean supportsHeat
     ) {
         private void validate(String type, Counts inputs, Counts outputs) {
-            check(type, "item inputs", inputs.items, minItemInputs, maxItemInputs);
-            check(type, "fluid inputs", inputs.fluids, minFluidInputs, maxFluidInputs);
-            check(type, "item outputs", outputs.items, minItemOutputs, maxItemOutputs);
-            check(type, "fluid outputs", outputs.fluids, minFluidOutputs, maxFluidOutputs);
+            check(type, "item inputs", inputs.items, itemInput);
+            check(type, "fluid inputs", inputs.fluids, fluidsInput);
+            check(type, "item outputs", outputs.items, itemOutput);
+            check(type, "fluid outputs", outputs.fluids, fluidsOutput);
 
             if (requireAnyInputAndOutput && inputs.items + inputs.fluids == 0) {
                 throw new KubeRuntimeException("TFMG recipe '" + type + "' requires at least one input");
@@ -304,9 +313,9 @@ public final class TFMGKubeRecipe extends KubeRecipe {
             }
         }
 
-        private static void check(String type, String label, int actual, int minimum, int maximum) {
-            if (actual < minimum || actual > maximum) {
-                var expected = minimum == maximum ? Integer.toString(minimum) : minimum + ".." + maximum;
+        private static void check(String type, String label, int actual, MinMax range) {
+            if (actual < range.min || actual > range.max) {
+                var expected = range.min == range.max ? Integer.toString(range.min) : range.min + ".." + range.max;
                 throw new KubeRuntimeException(
                         "TFMG recipe '" + type + "' requires " + expected + " " + label + ", got " + actual
                 );
