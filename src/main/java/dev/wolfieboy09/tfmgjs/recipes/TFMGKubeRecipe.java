@@ -136,10 +136,6 @@ public final class TFMGKubeRecipe extends KubeRecipe {
 
     public TFMGKubeRecipe heatLevel(int level) {
         requireVatMethod("heatLevel");
-        if (level < 0) {
-            throw recipeError("TFMG vat heat level cannot be negative");
-        }
-
         return setSchemaValue("heat_level", level);
     }
 
