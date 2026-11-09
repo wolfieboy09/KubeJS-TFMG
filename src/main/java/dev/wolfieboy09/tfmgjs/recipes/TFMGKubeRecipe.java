@@ -34,7 +34,7 @@ public final class TFMGKubeRecipe extends KubeRecipe {
             "casting",              new Shape(range(0), range(1), range(1), range(0), false, false),
             "industrial_blasting",  new Shape(range(1, 2), range(0), range(0), range(1, 3), false, false),
             "coking",               new Shape(range(1), range(0), range(1), range(2), false, false),
-            "distillation",         new Shape(range(0), range(1), range(0), range(3, 6), false, true),
+            "distillation",         new Shape(range(0), range(1), range(0), range(2, 6), false, true),
             "winding",              new Shape(range(2), range(0), range(1), range(0), false, false),
             "polarizing",           new Shape(range(1), range(0), range(1), range(0), false, false),
             "hot_blast",            new Shape(range(0), range(2), range(0), range(2), false, false),
