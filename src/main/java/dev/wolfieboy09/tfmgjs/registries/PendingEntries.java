@@ -18,10 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class PendingEntries {
     private static final Map<ResourceLocation, ResourceLocation> MIXER_MODE = new LinkedHashMap<>();
@@ -45,6 +42,7 @@ public class PendingEntries {
         if (!EngineFuelManager.getEngineFuelMap().isEmpty()) {
             for (Map.Entry<ResourceLocation, EngineFuelEvent> entry : EngineFuelManager.getEngineFuelMap().entrySet()) {
                 ResourceLocation fuelId = entry.getKey();
+                ResourceKey<EngineFuelType> newFuel = resolveEngineFuel(fuelId);
 
                 for (Holder<Item> itemId : entry.getValue().getAcceptedItems()) {
                     Optional<Item> item = BuiltInRegistries.ITEM.getOptional(itemId.value().kjs$getKey());
@@ -54,12 +52,14 @@ public class PendingEntries {
 
                     TFMGJSPlugin.addPendingCylinder(item.get().kjs$getIdLocation());
 
-                    List<ResourceKey<EngineFuelType>> validFuels = List.of(resolveEngineFuel(fuelId));
-                    
                     CylinderFuels current = item.get().components().getOrDefault(TFMGDataComponents.ENGINE_CYLINDER, CylinderFuels.EMPTY);
-                    current.validFuels().addAll(validFuels);
 
-                    event.modify(item.get(), builder -> builder.set(TFMGDataComponents.ENGINE_CYLINDER, current));
+                    Set<ResourceKey<EngineFuelType>> merged = new LinkedHashSet<>(current.validFuels());
+                    merged.add(newFuel);
+
+                    CylinderFuels updated = new CylinderFuels(List.copyOf(merged));
+
+                    event.modify(item.get(), builder -> builder.set(TFMGDataComponents.ENGINE_CYLINDER, updated));
                 }
             }
         }
