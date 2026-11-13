@@ -2,9 +2,9 @@ package dev.wolfieboy09.tfmgjs.events;
 
 import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.event.EventHandler;
+import dev.wolfieboy09.tfmgjs.registries.fuel.FlamethrowerFuelEvent;
 import dev.wolfieboy09.tfmgjs.registries.fuel.engine.EngineFuelEvent;
 import dev.wolfieboy09.tfmgjs.registries.fuel.engine.EngineFuelStartup;
-import dev.wolfieboy09.tfmgjs.registries.fuel.FlamethrowerFuelEvent;
 
 public interface TFMGJSEvents {
     EventGroup GROUP = EventGroup.of("TFMGEvents");

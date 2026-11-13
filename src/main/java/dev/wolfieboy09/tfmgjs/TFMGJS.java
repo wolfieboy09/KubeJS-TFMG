@@ -19,7 +19,7 @@ public class TFMGJS {
 
     public TFMGJS(IEventBus bus, ModContainer container) {
         bus.addListener(PendingEntries::onModifyDefaultComponents);
-        TFMGJSPlugin.register(bus);
+        //TFMGJSPlugin.register(bus);
     }
 
     public static ResourceLocation asResource(String path) {

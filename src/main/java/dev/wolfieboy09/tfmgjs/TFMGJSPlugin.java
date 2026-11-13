@@ -13,7 +13,6 @@ import com.drmangotea.tfmg.registry.TFMGPartialModels;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import dev.latvian.mods.kubejs.KubeJS;
 import dev.latvian.mods.kubejs.client.LangKubeEvent;
 import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.generator.KubeDataGenerator;
@@ -35,11 +34,11 @@ import dev.wolfieboy09.tfmgjs.events.TFMGJSEvents;
 import dev.wolfieboy09.tfmgjs.recipes.TFMGKubeRecipe;
 import dev.wolfieboy09.tfmgjs.registries.PendingEntries;
 import dev.wolfieboy09.tfmgjs.registries.electrode.KubeElectrodeModeBuilder;
-import dev.wolfieboy09.tfmgjs.registries.fuel.engine.EngineFuelManager;
-import dev.wolfieboy09.tfmgjs.registries.fuel.framework.BasicFuelBuilder;
-import dev.wolfieboy09.tfmgjs.registries.fuel.engine.EngineFuelEvent;
-import dev.wolfieboy09.tfmgjs.registries.fuel.engine.EngineFuelStartup;
 import dev.wolfieboy09.tfmgjs.registries.fuel.FlamethrowerFuelEvent;
+import dev.wolfieboy09.tfmgjs.registries.fuel.engine.EngineFuelEvent;
+import dev.wolfieboy09.tfmgjs.registries.fuel.engine.EngineFuelManager;
+import dev.wolfieboy09.tfmgjs.registries.fuel.engine.EngineFuelStartup;
+import dev.wolfieboy09.tfmgjs.registries.fuel.framework.BasicFuelBuilder;
 import dev.wolfieboy09.tfmgjs.registries.mixer.KubeMixerModeBuilder;
 import dev.wolfieboy09.tfmgjs.registries.vatops.KubeVatOperationBuilder;
 import dev.wolfieboy09.tfmgjs.wrappers.VatOperationSpread;
@@ -47,15 +46,13 @@ import dev.wolfieboy09.tfmgjs.wrappers.VatOperationWrapper;
 import dev.wolfieboy09.tfmgjs.wrappers.VatTypeWrapper;
 import dev.wolfieboy09.tfmgjs.wrappers.WrappedFluidWrapper;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Set;
 
 @ParametersAreNonnullByDefault
 public class TFMGJSPlugin implements KubeJSPlugin {
-    private static final DeferredRegister<CableType> CABLE_TYPES = DeferredRegister.create(TFMGRegistries.CABLE_TYPE, KubeJS.MOD_ID);
+    //private static final DeferredRegister<CableType> CABLE_TYPES = DeferredRegister.create(TFMGRegistries.CABLE_TYPE, KubeJS.MOD_ID);
 
     public static final ResourceLocation PROCESSING_RECIPE_FACTORY = ResourceLocation.fromNamespaceAndPath(TFMGJS.MODID, "processing");
 
@@ -190,7 +187,7 @@ public class TFMGJSPlugin implements KubeJSPlugin {
         filter.deny(PendingEntries.class);
     }
 
-    public static void register(IEventBus bus) {
-        CABLE_TYPES.register(bus);
-    }
+//    public static void register(IEventBus bus) {
+//        CABLE_TYPES.register(bus);
+//    }
 }
