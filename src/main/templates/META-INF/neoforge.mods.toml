@@ -51,6 +51,7 @@ side="BOTH"
 [[dependencies.${mod_id}]]
 modId="tfmg"
 type="required"
-versionRange="[${tfmg_version},)"
+#TODO change on next update
+versionRange="[1.3.3a,)"
 ordering="NONE"
 side="BOTH"
