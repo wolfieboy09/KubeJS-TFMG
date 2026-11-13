@@ -13,6 +13,7 @@ import com.drmangotea.tfmg.registry.TFMGPartialModels;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import dev.latvian.mods.kubejs.KubeJS;
 import dev.latvian.mods.kubejs.client.LangKubeEvent;
 import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.generator.KubeDataGenerator;
@@ -26,7 +27,6 @@ import dev.latvian.mods.kubejs.registry.ServerRegistryRegistry;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
-import dev.wolfieboy09.tfmgjs.bridger.ItemEntryCreator;
 import dev.wolfieboy09.tfmgjs.component.MixerModeComponent;
 import dev.wolfieboy09.tfmgjs.component.VatOperationComponent;
 import dev.wolfieboy09.tfmgjs.component.VatTypeComponent;
@@ -47,14 +47,17 @@ import dev.wolfieboy09.tfmgjs.wrappers.VatOperationWrapper;
 import dev.wolfieboy09.tfmgjs.wrappers.VatTypeWrapper;
 import dev.wolfieboy09.tfmgjs.wrappers.WrappedFluidWrapper;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Set;
 
 @ParametersAreNonnullByDefault
 public class TFMGJSPlugin implements KubeJSPlugin {
-    public static final ResourceLocation PROCESSING_RECIPE_FACTORY =
-            ResourceLocation.fromNamespaceAndPath(TFMGJS.MODID, "processing");
+    private static final DeferredRegister<CableType> CABLE_TYPES = DeferredRegister.create(TFMGRegistries.CABLE_TYPE, KubeJS.MOD_ID);
+
+    public static final ResourceLocation PROCESSING_RECIPE_FACTORY = ResourceLocation.fromNamespaceAndPath(TFMGJS.MODID, "processing");
 
     private static final Set<ResourceLocation> pendingCylinders = Sets.newHashSet();
 
@@ -110,6 +113,21 @@ public class TFMGJSPlugin implements KubeJSPlugin {
         if (TFMGJSEvents.ENGINE_FUEL_STARTUP.hasListeners()) {
             TFMGJSEvents.ENGINE_FUEL_STARTUP.post(ScriptType.STARTUP, new EngineFuelStartup());
         }
+
+//        if (TFMGJSEvents.CABLE_TYPES.hasListeners()) {
+//            KubeCableBuilder cableBuilder = new KubeCableBuilder();
+//            TFMGJSEvents.CABLE_TYPES.post(ScriptType.STARTUP, cableBuilder);
+//            for (KubeCableBuilder.Builder builder : cableBuilder.getBuilders()) {
+//                KubeCableBuilder.PropertyWrapper properties = builder.getProperties();
+//                CABLE_TYPES.register(builder.getId().toString(), () -> new CableType(
+//                        new CableType.Properties(builder.getId())
+//                                .spool(() -> properties.getSpool())
+//                                .wire(properties.getWire())
+//                                .color(properties.getColor())
+//                                .resistance(properties.getResistivity())
+//                ));
+//            }
+//        }
     }
 
     @Override
@@ -170,27 +188,9 @@ public class TFMGJSPlugin implements KubeJSPlugin {
     @Override
     public void registerClasses(ClassFilter filter) {
         filter.deny(PendingEntries.class);
-        filter.deny(ItemEntryCreator.class);
     }
 
-    //TODO: WHY REGISTRATE, WHYYYYY
-    // Get this to register correctly, and get SpoolItem correctly
-    // That's a later problem really
-//    @Override
-//    public void initStartup() {
-//        if (TFMGJSEvents.CABLE_TYPES.hasListeners()) {
-//            KubeCableBuilder cableBuilder = new KubeCableBuilder();
-//            TFMGJSEvents.CABLE_TYPES.post(ScriptType.STARTUP, cableBuilder);
-//            for (KubeCableBuilder.Builder builder : cableBuilder.getBuilders()) {
-//                KubeCableBuilder.PropertyWrapper properties = builder.getProperties();
-//                TFMGJS.REGISTRATE.cableType(builder.getId().getPath(), CableType::new)
-//                        .properties(p -> p
-//                                .spool(properties.getSpool())
-//                                .wire(properties.getWire())
-//                                .color(properties.getColor()))
-//                        .transform(TFMGResistivity.setResistivity(properties.getResistivity()))
-//                        .register();
-//            }
-//        }
-//    }
+    public static void register(IEventBus bus) {
+        CABLE_TYPES.register(bus);
+    }
 }

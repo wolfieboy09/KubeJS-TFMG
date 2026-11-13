@@ -37,10 +37,5 @@ public class EngineFuelStartup implements KubeEvent {
         public ResourceLocation getId() {
             return this.id;
         }
-
-        @HideFromJS
-        public LinkedList<ResourceLocation> getAcceptedItems() {
-            return this.registered.getAcceptedItems();
-        }
     }
 }

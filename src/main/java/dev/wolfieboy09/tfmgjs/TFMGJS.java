@@ -1,6 +1,7 @@
 package dev.wolfieboy09.tfmgjs;
 
 import com.mojang.logging.LogUtils;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.wolfieboy09.tfmgjs.registries.PendingEntries;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -13,10 +14,12 @@ public class TFMGJS {
     public static final String MODID = "tfmgjs";
     public static final Logger LOGGER = LogUtils.getLogger();
 
+    @HideFromJS
     public static final KubeRegistrate REGISTRATE = KubeRegistrate.create();
 
     public TFMGJS(IEventBus bus, ModContainer container) {
         bus.addListener(PendingEntries::onModifyDefaultComponents);
+        TFMGJSPlugin.register(bus);
     }
 
     public static ResourceLocation asResource(String path) {

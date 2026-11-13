@@ -1,13 +1,15 @@
 package dev.wolfieboy09.tfmgjs.registries.fuel.engine;
 
+import com.drmangotea.tfmg.registry.TFMGFluids;
+import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.event.KubeEvent;
-import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.util.KubeResourceLocation;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.ReturnsSelf;
-import dev.wolfieboy09.tfmgjs.content.WrappedFluid;
 import dev.wolfieboy09.tfmgjs.registries.fuel.framework.BasicFuelBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.material.Fluid;
 
 import java.util.LinkedList;
 
@@ -40,6 +42,7 @@ public class EngineFuelEvent implements KubeEvent {
 
             entry.json().addProperty("efficiency", b.efficiency);
             entry.json().addProperty("torque", b.torque);
+            entry.json().addProperty("exhaust", BuiltInRegistries.FLUID.getKey(b.exhaust).toString());
 
             result.add(entry);
         }
@@ -49,6 +52,7 @@ public class EngineFuelEvent implements KubeEvent {
     public static class Builder extends BasicFuelBuilder {
         private float efficiency = 1;
         private float torque = 1;
+        private Fluid exhaust = TFMGFluids.CARBON_DIOXIDE.get();
 
         public Builder(ResourceLocation id) {
             super(id);
@@ -58,8 +62,7 @@ public class EngineFuelEvent implements KubeEvent {
         public LinkedList<ResourceLocation> getAcceptedItems() {
             EngineFuelEvent registered = EngineFuelManager.getEngineFuel(getId());
             if (registered == null) {
-                ConsoleJS.SERVER.warn("Engine fuel '%s' was not created in startup scripts, no items will be registered as its cylinders".formatted(id));
-                return new LinkedList<>();
+                throw new KubeRuntimeException("Engine fuel '%s' was not created in startup scripts, no items will be registered as its cylinders".formatted(id));
             }
             return registered.getAcceptedItems();
         }
@@ -76,14 +79,10 @@ public class EngineFuelEvent implements KubeEvent {
             return this;
         }
 
-        @HideFromJS
-        public float getEfficiency() {
-            return this.efficiency;
-        }
-
-        @HideFromJS
-        public float getTorque() {
-            return this.torque;
+        @ReturnsSelf
+        public Builder exhaust(Fluid exhaust) {
+            this.exhaust = exhaust;
+            return this;
         }
     }
 }

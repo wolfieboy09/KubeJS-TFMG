@@ -1,16 +1,16 @@
 package dev.wolfieboy09.tfmgjs.events.cable;
 
+import com.drmangotea.tfmg.content.machinery.misc.winding_machine.SpoolItem;
 import com.drmangotea.tfmg.registry.TFMGItems;
-import com.tterrag.registrate.util.entry.ItemEntry;
 import dev.latvian.mods.kubejs.event.KubeStartupEvent;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.ReturnsSelf;
-import dev.wolfieboy09.tfmgjs.bridger.ItemEntryCreator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 import java.util.LinkedList;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class KubeCableBuilder implements KubeStartupEvent {
     private transient final LinkedList<Builder> BUILDERS = new LinkedList<>();
@@ -55,8 +55,8 @@ public class KubeCableBuilder implements KubeStartupEvent {
     public static class PropertyWrapper {
         private transient int color = 0xFFFFFF;
         private transient float resistivity = 0;
-        private transient ItemEntry<?> spool = TFMGItems.COPPER_SPOOL;
-        private transient ItemEntry<?> wire = TFMGItems.COPPER_WIRE;
+        private transient Supplier<SpoolItem> spool = TFMGItems.COPPER_SPOOL;
+        private transient Supplier<Item> wire = TFMGItems.COPPER_WIRE;
 
         @ReturnsSelf
         public PropertyWrapper resistivity(float resistivity) {
@@ -71,14 +71,14 @@ public class KubeCableBuilder implements KubeStartupEvent {
         }
 
         @ReturnsSelf
-        public PropertyWrapper spool(Item spool) {
-            this.spool = ItemEntryCreator.fromItem(spool);
+        public PropertyWrapper spool(SpoolItem spool) {
+            this.spool = () -> spool;
             return this;
         }
 
         @ReturnsSelf
         public PropertyWrapper wire(Item wire) {
-            this.wire = ItemEntryCreator.fromItem(wire);
+            this.wire = () -> wire;
             return this;
         }
 
@@ -93,12 +93,12 @@ public class KubeCableBuilder implements KubeStartupEvent {
         }
 
         @HideFromJS
-        public ItemEntry<?> getSpool() {
+        public Supplier<SpoolItem> getSpool() {
             return this.spool;
         }
 
         @HideFromJS
-        public ItemEntry<?> getWire() {
+        public Supplier<Item> getWire() {
             return this.wire;
         }
     }
