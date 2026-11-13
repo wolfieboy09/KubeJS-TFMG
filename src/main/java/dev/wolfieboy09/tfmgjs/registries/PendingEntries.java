@@ -52,8 +52,11 @@ public class PendingEntries {
                     TFMGJSPlugin.addPendingCylinder(item.get().kjs$getIdLocation());
 
                     List<ResourceKey<EngineFuelType>> validFuels = List.of(resolveEngineFuel(fuelId));
+                    
+                    CylinderFuels current = item.get().components().getOrDefault(TFMGDataComponents.ENGINE_CYLINDER, CylinderFuels.EMPTY);
+                    current.validFuels().addAll(validFuels);
 
-                    event.modify(item.get(), builder -> builder.set(TFMGDataComponents.ENGINE_CYLINDER, new CylinderFuels(validFuels)));
+                    event.modify(item.get(), builder -> builder.set(TFMGDataComponents.ENGINE_CYLINDER, current));
                 }
             }
         }
