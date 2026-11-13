@@ -7,15 +7,17 @@ import dev.latvian.mods.kubejs.util.KubeResourceLocation;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.ReturnsSelf;
 import dev.wolfieboy09.tfmgjs.registries.fuel.framework.BasicFuelBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
 
 import java.util.LinkedList;
 
 public class EngineFuelEvent implements KubeEvent {
     private final LinkedList<Builder> builders = new LinkedList<>();
-    private final LinkedList<ResourceLocation> acceptedItems = new LinkedList<>();
+    private final LinkedList<Holder<Item>> acceptedItems = new LinkedList<>();
 
     public Builder fuel(KubeResourceLocation fuelId) {
         Builder b = new Builder(fuelId.wrapped());
@@ -29,7 +31,7 @@ public class EngineFuelEvent implements KubeEvent {
     }
 
     @HideFromJS
-    public LinkedList<ResourceLocation> getAcceptedItems() {
+    public LinkedList<Holder<Item>> getAcceptedItems() {
         return this.acceptedItems;
     }
 
@@ -59,7 +61,7 @@ public class EngineFuelEvent implements KubeEvent {
         }
 
         @HideFromJS
-        public LinkedList<ResourceLocation> getAcceptedItems() {
+        public LinkedList<Holder<Item>> getAcceptedItems() {
             EngineFuelEvent registered = EngineFuelManager.getEngineFuel(getId());
             if (registered == null) {
                 throw new KubeRuntimeException("Engine fuel '%s' was not created in startup scripts, no items will be registered as its cylinders".formatted(id));

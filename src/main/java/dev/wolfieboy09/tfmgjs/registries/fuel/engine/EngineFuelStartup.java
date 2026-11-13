@@ -4,10 +4,9 @@ import dev.latvian.mods.kubejs.event.KubeEvent;
 import dev.latvian.mods.kubejs.util.KubeResourceLocation;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.ReturnsSelf;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-
-import java.util.LinkedList;
 
 public class EngineFuelStartup implements KubeEvent {
     public Builder create(KubeResourceLocation id) {
@@ -25,10 +24,11 @@ public class EngineFuelStartup implements KubeEvent {
             this.registered = registered;
         }
 
+        @SafeVarargs
         @ReturnsSelf
-        public Builder accepts(Item... items) {
-            for (Item item : items) {
-                this.registered.getAcceptedItems().add(item.kjs$getIdLocation());
+        public final Builder accepts(Holder<Item>... items) {
+            for (Holder<Item> item : items) {
+                this.registered.getAcceptedItems().add(item);
             }
             return this;
         }

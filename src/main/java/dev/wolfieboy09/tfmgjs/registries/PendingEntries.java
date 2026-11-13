@@ -43,8 +43,8 @@ public class PendingEntries {
             for (Map.Entry<ResourceLocation, EngineFuelEvent> entry : EngineFuelManager.getEngineFuelMap().entrySet()) {
                 ResourceLocation fuelId = entry.getKey();
 
-                for (ResourceLocation itemId : entry.getValue().getAcceptedItems()) {
-                    Optional<Item> item = BuiltInRegistries.ITEM.getOptional(itemId);
+                for (Holder<Item> itemId : entry.getValue().getAcceptedItems()) {
+                    Optional<Item> item = BuiltInRegistries.ITEM.getOptional(itemId.value().kjs$getKey());
                     if (item.isEmpty()) {
                         throw new KubeRuntimeException("Could not resolve item %s for engine fuel %s".formatted(itemId, fuelId));
                     }
